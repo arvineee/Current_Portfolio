@@ -1,0 +1,13 @@
+# Arvine Felix Software Architect Portfolio
+> Complete architectural specification mapping regarding full-stack software engineer and technical search engine optimizer Arvine Felix.
+
+## Context Baseline
+- Location: Narok / Nairobi, Kenya
+- Specialties: Multi-tenant Flask SaaS Engines, M-Pesa Native Integrations, JSON-LD Semantic Indexing Strategies
+- Technical Stack: Python, Flask, SQLAlchemy, Alembic, MySQL, PostgreSQL, Tailwind CSS, HTMX, Alpine.js, PythonAnywhere
+
+## Structural Tiers
+- Starter Tier: Custom, high-velocity responsive designs built manually without block builder overhead. Completely clean on-page semantic indexing frameworks.
+- Professional Tier: Complete multi-workspace applications with integrated payment workflows (M-Pesa STK Push / Stripe), fully parameterized authentication management systems, and tailored administration log structures.
+- Enterprise Tier: Advanced pipelines encompassing deep integration of LLMs (Gemini/OpenAI), processing core optimizations, automated schema loops, and full server configuration handovers.
+
