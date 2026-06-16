@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arvine Felix — Web Developer & SEO Specialist</title>
+  <meta name="description" content="I turn ideas into web products that actually work — fast delivery, clean code, real results. Flask, Python, SEO, M-Pesa integrations." />
+  <meta property="og:title" content="Arvine Felix — Web Developer & SEO Specialist" />
+  <meta property="og:description" content="I turn ideas into web products that actually work — fast delivery, clean code, real results." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            base: '#0A0A0F',
+            surface: '#111118',
+            surfaceHigh: '#1A1A26',
+            accent: '#6C63FF',
+            textPrimary: '#E8E8F0',
+            textMuted: '#555570',
+          },
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="bg-base text-textPrimary font-body antialiased">
+
+  <!-- ── NAV ── -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-base/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#hero" class="font-display font-700 text-xl tracking-tight">
+        <span class="text-accent">&lt;</span>AF<span class="text-accent">/&gt;</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 font-display text-sm font-500">
+        <a href="#services" class="nav-link hover:text-accent transition-colors">Services</a>
+        <a href="#projects" class="nav-link hover:text-accent transition-colors">Projects</a>
+        <a href="#about" class="nav-link hover:text-accent transition-colors">About</a>
+        <a href="#pricing" class="nav-link hover:text-accent transition-colors">Pricing</a>
+        <a href="#contact" class="btn-primary text-sm px-5 py-2">Hire Me</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://wa.me/{{ whatsapp|replace('+', '') }}" target="_blank" 
+           class="hidden md:flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition">
+          💬 WhatsApp
+        </a>
+        <button id="menuBtn" class="md:hidden text-textPrimary focus:outline-none">
+          <svg id="hamburgerIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-surface border-t border-white/5 px-6 py-4 flex flex-col gap-4 font-display text-sm">
+      <a href="#services" class="nav-link mobile-link hover:text-accent transition-colors">Services</a>
+      <a href="#projects" class="nav-link mobile-link hover:text-accent transition-colors">Projects</a>
+      <a href="#about" class="nav-link mobile-link hover:text-accent transition-colors">About</a>
+      <a href="#pricing" class="nav-link mobile-link hover:text-accent transition-colors">Pricing</a>
+      <a href="#contact" class="btn-primary text-center py-2">Hire Me</a>
+      <a href="https://wa.me/{{ whatsapp|replace('+', '') }}" target="_blank" class="bg-green-600 text-white text-center py-3 rounded-full font-medium">💬 WhatsApp</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+    <div class="orb orb-accent"></div>
+
+    <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+
+      <div class="inline-flex items-center gap-2 bg-surface border border-accent/30 rounded-full px-4 py-1.5 mb-8 font-mono text-xs text-accent">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        Open for projects — slots filling fast
+      </div>
+
+      <h1 class="font-display font-700 text-5xl md:text-7xl leading-tight mb-6">
+        Your idea deserves<br/>
+        <span class="gradient-text">a developer who ships.</span>
+      </h1>
+
+      <div class="inline-block bg-surface border border-white/10 rounded-xl px-6 py-4 mb-8 font-mono text-sm text-left max-w-lg w-full">
+        <div class="flex items-center gap-1.5 mb-3">
+          <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+        </div>
+        <span class="text-textMuted">$ arvine --can </span>
+        <span class="text-accent" id="typewriter"></span>
+        <span class="cursor-blink text-accent">|</span>
+      </div>
+
+      <p class="text-textMuted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+        I've spent 3+ years building web products people actually use — from AI-powered SaaS tools to news platforms ranking on Google. I write clean code, deliver on time, and won't disappear after launch.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#projects" class="btn-primary px-8 py-3 text-base">See What I've Built</a>
+        <a href="#contact" class="btn-outline px-8 py-3 text-base">Start a Project →</a>
+      </div>
+
+      <div class="mt-16 grid grid-cols-3 gap-6 max-w-md mx-auto">
+        <div class="text-center">
+          <div class="font-display font-700 text-3xl text-accent">3+</div>
+          <div class="text-textMuted text-xs mt-1">Years Building</div>
+        </div>
+        <div class="text-center border-x border-white/10">
+          <div class="font-display font-700 text-3xl text-accent">&lt;24h</div>
+          <div class="text-textMuted text-xs mt-1">Response Time</div>
+        </div>
+        <div class="text-center">
+          <div class="font-display font-700 text-3xl text-accent">On Time</div>
+          <div class="text-textMuted text-xs mt-1">Every Delivery</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SERVICES ── -->
+  <section id="services" class="py-24 relative">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-header">
+        <span class="eyebrow">What I Do</span>
+        <h2 class="section-title">Services</h2>
+        <p class="section-sub">Not a jack-of-all-trades. These are the things I'm genuinely good at — and what I get hired for.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+        {% set services = [
+          {
+            'icon': '⚡',
+            'title': 'Custom Web Applications',
+            'desc': 'Got a product idea that needs a real backend? I build Flask apps with proper architecture — databases, user auth, admin panels, APIs. No WordPress shortcuts, no spaghetti code.',
+            'tags': ['Python', 'Flask', 'SQLAlchemy', 'REST APIs']
+          },
+          {
+            'icon': '📈',
+            'title': 'Technical SEO',
+            'desc': 'Rankings don\'t come from guessing. I audit your site, fix what\'s killing your visibility, implement Schema.org markup, and get you positioned where Google — and AI — can find you.',
+            'tags': ['SEO Audits', 'Schema.org', 'Core Web Vitals', 'Google News']
+          },
+          {
+            'icon': '💳',
+            'title': 'Payment Integrations',
+            'desc': 'M-Pesa Daraja, Lipana STK Push, Stripe — I\'ve wired these into live production apps. Your customers will pay without friction. You\'ll get notified instantly. It just works.',
+            'tags': ['M-Pesa', 'Stripe', 'Daraja API', 'Webhooks']
+          },
+          {
+            'icon': '🤖',
+            'title': 'AI-Powered Features',
+            'desc': 'Not AI for the sake of it. I integrate Gemini and OpenAI into your product where it actually adds value — smart document parsing, content automation, intelligent search.',
+            'tags': ['Gemini AI', 'OpenAI', 'Automation']
+          },
+          {
+            'icon': '🎨',
+            'title': 'Frontend That Converts',
+            'desc': 'Clean, fast, mobile-first interfaces built with Tailwind, Alpine.js, and HTMX. Pages that load in under 2 seconds and guide visitors toward taking action.',
+            'tags': ['Tailwind CSS', 'Alpine.js', 'HTMX', 'Bootstrap']
+          },
+          {
+            'icon': '🚀',
+            'title': 'Deployment & Handover',
+            'desc': 'I don\'t just hand you a zip file. I deploy your app, configure the server, set up your domain, and make sure you know how to manage what I built.',
+            'tags': ['PythonAnywhere', 'Nginx', 'MySQL', 'Linux']
+          }
+        ] %}
+
+        {% for s in services %}
+        <div class="glass-card group hover:border-accent/40 transition-all duration-300 reveal">
+          <div class="text-3xl mb-4">{{ s.icon }}</div>
+          <h3 class="font-display font-600 text-lg mb-3 group-hover:text-accent transition-colors">{{ s.title }}</h3>
+          <p class="text-textMuted text-sm leading-relaxed mb-4">{{ s.desc }}</p>
+          <div class="flex flex-wrap gap-2">
+            {% for tag in s.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects" class="py-24 bg-surface/30">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-header">
+        <span class="eyebrow">Real Work</span>
+        <h2 class="section-title">Projects</h2>
+        <p class="section-sub">These aren't mockups or tutorial clones. They're live products I designed, built, and deployed.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+        {% for project in projects %}
+        <div class="glass-card group hover:border-accent/40 transition-all duration-300 reveal flex flex-col">
+          {% if project.featured %}
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+            <span class="text-accent text-xs font-mono">Live in production</span>
+          </div>
+          {% endif %}
+          <h3 class="font-display font-600 text-lg mb-2 group-hover:text-accent transition-colors">{{ project.title }}</h3>
+          <p class="text-textMuted text-sm leading-relaxed mb-4 flex-1">{{ project.description }}</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            {% for tag in project.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% if project.url != '#' %}
+          <a href="{{ project.url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm text-accent hover:text-accent/80 transition-colors font-display">
+            View Live Site
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about" class="py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <span class="eyebrow">About Me</span>
+          <h2 class="font-display font-700 text-4xl md:text-5xl mt-2 mb-6 leading-tight">
+            I build things.<br/><span class="gradient-text">Then I make them rank.</span>
+          </h2>
+          <p class="text-textMuted leading-relaxed mb-4">
+            I'm Arvine Felix — a full-stack web developer and SEO specialist with 3+ years of experience turning product ideas into working software. I'm based in Kenya and work with clients worldwide.
+          </p>
+          <p class="text-textMuted leading-relaxed mb-4">
+            My approach is simple: understand what you actually need, build it properly, deliver it on time. I've built AI-powered SaaS products, integrated African payment systems, and optimised sites to rank on Google News. I care about clean code, fast delivery, and not leaving clients stranded after the project ends.
+          </p>
+          <p class="text-textMuted leading-relaxed mb-6">
+            If you need a developer who communicates clearly, codes reliably, and costs less than an agency — we should talk.
+          </p>
+
+          <div class="grid grid-cols-2 gap-3 mb-8">
+            {% set stack = ['Python / Flask', 'SQLAlchemy / Alembic', 'Tailwind / Bootstrap', 'Alpine.js / HTMX', 'M-Pesa / Stripe', 'Gemini AI / OpenAI', 'MySQL / PostgreSQL', 'PythonAnywhere / Nginx'] %}
+            {% for item in stack %}
+            <div class="flex items-center gap-2 text-sm text-textMuted">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"></span>
+              {{ item }}
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="flex gap-4 flex-wrap">
+            <a href="https://x.com/Arvinefelix" target="_blank" class="social-link">X @Arvinefelix</a>
+            <a href="https://linkedin.com/in/arvinefelix" target="_blank" class="social-link">LinkedIn</a>
+            <a href="https://arvalblognews.online" target="_blank" class="social-link">My Blog</a>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="bg-surface border border-white/10 rounded-2xl p-6 font-mono text-sm">
+            <div class="flex items-center gap-1.5 mb-4">
+              <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+              <span class="ml-3 text-textMuted text-xs">why_hire_me.py</span>
+            </div>
+            <pre class="text-xs leading-relaxed overflow-x-auto"><code><span class="text-accent">class</span> <span class="text-teal">ArvineFelix</span>:
+    name    = <span class="text-yellow-400">"Arvine Felix"</span>
+    role    = <span class="text-yellow-400">"Full-Stack Dev & SEO"</span>
+    base    = <span class="text-yellow-400">"Nairobi, Kenya 🇰🇪"</span>
+    reach   = <span class="text-yellow-400">"Worldwide"</span>
+
+    strengths = [
+        <span class="text-yellow-400">"Ships fast, no excuses"</span>,
+        <span class="text-yellow-400">"Communicates clearly"</span>,
+        <span class="text-yellow-400">"Writes maintainable code"</span>,
+        <span class="text-yellow-400">"Stays until it's done"</span>,
+    ]
+
+    <span class="text-accent">def</span> <span class="text-teal">what_you_get</span>(self):
+        <span class="text-accent">return</span> {
+            <span class="text-yellow-400">"delivery"</span>: <span class="text-yellow-400">"on time"</span>,
+            <span class="text-yellow-400">"code"</span>: <span class="text-yellow-400">"clean & documented"</span>,
+            <span class="text-yellow-400">"support"</span>: <span class="text-yellow-400">"post-launch included"</span>,
+            <span class="text-yellow-400">"ghosting"</span>: <span class="text-yellow-400">"never"</span>,
+        }</code></pre>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-4">
+            <div class="glass-card text-center py-4">
+              <div class="text-2xl font-display font-700 text-accent">Fast</div>
+              <div class="text-textMuted text-xs mt-1">Delivery, always</div>
+            </div>
+            <div class="glass-card text-center py-4">
+              <div class="text-2xl font-display font-700 text-accent">Clean</div>
+              <div class="text-textMuted text-xs mt-1">Code you can maintain</div>
+            </div>
+            <div class="glass-card text-center py-4">
+              <div class="text-2xl font-display font-700 text-accent">Fair</div>
+              <div class="text-textMuted text-xs mt-1">Pricing, no BS</div>
+            </div>
+            <div class="glass-card text-center py-4">
+              <div class="text-2xl font-display font-700 text-accent">Real</div>
+              <div class="text-textMuted text-xs mt-1">Production experience</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ── -->
+  <section id="pricing" class="py-24 bg-surface/30">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-header">
+        <span class="eyebrow">Pricing</span>
+        <h2 class="section-title">Simple, Honest Pricing</h2>
+        <p class="section-sub">No hidden fees. No scope creep surprises. You know what you're paying before we start.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        {% for plan in plans %}
+        <div class="pricing-card {% if plan.highlighted %}pricing-highlighted{% endif %} reveal flex flex-col">
+          {% if plan.highlighted %}
+          <div class="text-center mb-4">
+            <span class="bg-accent text-white text-xs font-mono px-3 py-1 rounded-full">Most Popular</span>
+          </div>
+          {% endif %}
+          <div class="mb-6">
+            <h3 class="font-display font-600 text-lg mb-1">{{ plan.name }}</h3>
+            <div class="flex items-end gap-1 mt-3">
+              <span class="font-display font-700 text-4xl {% if plan.highlighted %}text-accent{% else %}text-textPrimary{% endif %}">{{ plan.price }}</span>
+              {% if plan.period != 'quote' %}
+              <span class="text-textMuted text-sm mb-1">/ {{ plan.period }}</span>
+              {% endif %}
+            </div>
+            <p class="text-textMuted text-sm mt-2">{{ plan.description }}</p>
+          </div>
+          <ul class="space-y-3 flex-1 mb-8">
+            {% for feature in plan.features %}
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-accent mt-0.5 flex-shrink-0">✓</span>
+              <span class="text-textMuted">{{ feature }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          <a href="#contact"
+             class="{% if plan.highlighted %}btn-primary{% else %}btn-outline{% endif %} text-center py-3 text-sm font-display">
+            {{ plan.cta }}
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <p class="text-center text-textMuted text-sm mt-8">
+        Not sure which fits? <a href="#contact" class="text-accent hover:text-accent/80 transition-colors">Tell me what you need and I'll quote you directly →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact" class="py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="section-header">
+        <span class="eyebrow">Let's Talk</span>
+        <h2 class="section-title">Start Your Project</h2>
+        <p class="section-sub">Tell me what you're building. I'll tell you honestly if I can help — and what it'll take.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
+        <div class="reveal">
+          <div class="space-y-6 mb-8">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0 text-accent text-2xl">📧</div>
+              <div>
+                <div class="font-display font-500 text-sm mb-1">Email</div>
+                <div class="text-textMuted text-sm">your@email.com</div>
+                <div class="text-textMuted text-xs mt-1">I reply within 24 hours — usually faster</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0 text-accent text-2xl">💬</div>
+              <div>
+                <div class="font-display font-500 text-sm mb-1">WhatsApp</div>
+                <a href="https://wa.me/{{ whatsapp|replace('+', '') }}" target="_blank"
+                   class="text-accent text-sm hover:underline">{{ whatsapp }}</a>
+                <div class="text-textMuted text-xs mt-1">Quick questions welcome</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0 text-accent text-2xl">🐦</div>
+              <div>
+                <div class="font-display font-500 text-sm mb-1">X (Twitter)</div>
+                <a href="https://x.com/Arvinefelix" target="_blank"
+                   class="text-accent text-sm hover:underline">@Arvinefelix</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card border-accent/20 p-8">
+            <div class="text-accent text-sm font-mono mb-4">→ How this works</div>
+            <ol class="space-y-4 text-textMuted text-sm">
+              <li class="flex gap-4"><span class="font-mono text-accent font-medium">01</span> Send your project idea</li>
+              <li class="flex gap-4"><span class="font-mono text-accent font-medium">02</span> I review and reply with questions / quote</li>
+              <li class="flex gap-4"><span class="font-mono text-accent font-medium">03</span> We align on scope and price</li>
+              <li class="flex gap-4"><span class="font-mono text-accent font-medium">04</span> I build & deliver on time</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="glass-card p-8 md:p-10">
+            <div id="formAlert" class="hidden mb-6 p-4 rounded-2xl text-sm font-medium"></div>
+            
+            <div class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-textMuted mb-2">Your Name *</label>
+                  <input type="text" id="fname" 
+                         class="w-full bg-surfaceHigh border border-white/10 focus:border-accent rounded-2xl px-5 py-4 text-white placeholder:text-textMuted outline-none transition" 
+                         placeholder="Jane Smith" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-textMuted mb-2">Email Address *</label>
+                  <input type="email" id="femail" 
+                         class="w-full bg-surfaceHigh border border-white/10 focus:border-accent rounded-2xl px-5 py-4 text-white placeholder:text-textMuted outline-none transition" 
+                         placeholder="jane@company.com" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-textMuted mb-2">Project Type / What are you building?</label>
+                <input type="text" id="fsubject" 
+                       class="w-full bg-surfaceHigh border border-white/10 focus:border-accent rounded-2xl px-5 py-4 text-white placeholder:text-textMuted outline-none transition" 
+                       placeholder="e.g. E-commerce site with M-Pesa, SaaS dashboard..." />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-textMuted mb-2">Tell me more about your project *</label>
+                <textarea id="fmessage" rows="6"
+                          class="w-full bg-surfaceHigh border border-white/10 focus:border-accent rounded-3xl px-5 py-4 text-white placeholder:text-textMuted outline-none resize-none transition"
+                          placeholder="Describe your project — goals, timeline, budget range, and any specific requirements..."></textarea>
+              </div>
+
+              <button id="submitBtn" onclick="submitContact()"
+                class="btn-primary w-full py-4 text-base font-medium flex items-center justify-center gap-3 rounded-2xl">
+                <span id="btnText">Send Message</span>
+                <span id="btnSpinner" class="hidden">
+                  <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/>
+                  </svg>
+                </span>
+              </button>
+
+              <p class="text-center text-textMuted text-xs">No commitment. Fast reply guaranteed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/{{ whatsapp|replace('+','') }}" target="_blank"
+     class="fixed bottom-8 right-8 bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-4xl shadow-2xl z-50 transition hover:scale-110">
+    💬
+  </a>
+
+  <!-- ── FOOTER ── -->
+  <footer class="border-t border-white/5 py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="font-display font-600 text-sm">
+        <span class="text-accent">&lt;</span>AF<span class="text-accent">/&gt;</span>
+        <span class="text-textMuted ml-2">Arvine Felix — Built with Flask & ☕</span>
+      </div>
+      <div class="text-textMuted text-xs">© 2025 Arvine Felix</div>
+      <div class="flex gap-4">
+        <a href="https://x.com/Arvinefelix" target="_blank" class="text-textMuted hover:text-accent text-xs transition-colors">X</a>
+        <a href="https://linkedin.com/in/arvinefelix" target="_blank" class="text-textMuted hover:text-accent text-xs transition-colors">LinkedIn</a>
+        <a href="https://instagram.com/arvinefelix" target="_blank" class="text-textMuted hover:text-accent text-xs transition-colors">Instagram</a>
+        <a href="https://arvalblognews.online" target="_blank" class="text-textMuted hover:text-accent text-xs transition-colors">Blog</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
