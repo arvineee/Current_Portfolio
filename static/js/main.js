@@ -186,11 +186,7 @@ function showAlert(msg, type) {
   const alert = document.getElementById('formAlert');
   if (alert) {
     alert.textContent = msg;
-    alert.className = `mb-6 p-4 rounded-xl text-xs font-mono font-medium ${
-      type === 'success' 
-        ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30' 
-        : 'bg-rose-950/80 text-rose-300 border border-rose-500/30'
-    }`;
+    alert.className = type === 'success' ? 'alert-success' : 'alert-error';
     alert.classList.remove('hidden');
   }
 }
@@ -198,4 +194,5 @@ function showAlert(msg, type) {
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
 
