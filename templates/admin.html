@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Dashboard — Arvine Felix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F7F4EE;color:#1A1A1A;min-height:100vh}
+    /* Nav */
+    nav{background:#fff;border-bottom:1px solid #E5E0D5;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .nav-brand{font-weight:700;font-size:.95rem}
+    .nav-brand span{color:#E8591A}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .nav-right a{font-size:.8rem;color:#6B6B6B;text-decoration:none}
+    .nav-right a:hover{color:#E8591A}
+    /* Layout */
+    .wrap{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+    h1{font-size:1.4rem;font-weight:700;margin-bottom:.3rem}
+    .page-sub{font-size:.85rem;color:#8A8480;margin-bottom:2rem}
+    /* Flash messages */
+    .flash{padding:.85rem 1rem;border-radius:7px;font-size:.82rem;margin-bottom:1.5rem}
+    .flash.success{background:#EAF6EE;border:1px solid #A3D9B1;color:#2D7A45}
+    .flash.error{background:#FEF0ED;border:1px solid #F5B8A6;color:#C23F1A}
+    /* Add project form */
+    .add-card{background:#fff;border:1px solid #E5E0D5;border-radius:10px;padding:1.75rem;margin-bottom:2.5rem}
+    .add-card h2{font-size:1rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid #F0EDE6}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-full{grid-column:1/-1}
+    label{display:block;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem}
+    input[type=text],input[type=url],input[type=number],textarea,select{width:100%;background:#FAF8F4;border:1px solid #D8D2C5;border-radius:6px;padding:.7rem .9rem;font-size:.85rem;font-family:'Inter',sans-serif;color:#1A1A1A;outline:none;transition:border-color .2s,box-shadow .2s}
+    input:focus,textarea:focus{border-color:#E8591A;box-shadow:0 0 0 3px rgba(232,89,26,.08)}
+    textarea{resize:vertical;min-height:90px}
+    .check-row{display:flex;align-items:center;gap:.6rem;margin-top:.25rem}
+    .check-row input{width:auto;accent-color:#E8591A}
+    .check-row span{font-size:.85rem;color:#3D3D3D}
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.25rem;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:background .2s,transform .15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:#E8591A;color:#fff}
+    .btn-primary:hover{background:#CF4C10}
+    .btn-outline{background:transparent;border:1.5px solid #D8D2C5;color:#3D3D3D}
+    .btn-outline:hover{border-color:#1A1A1A}
+    .btn-danger{background:transparent;border:1.5px solid #F5B8A6;color:#C23F1A}
+    .btn-danger:hover{background:#FEF0ED}
+    .btn-sm{padding:.45rem .9rem;font-size:.75rem}
+    /* Projects table */
+    .section-title{font-size:1rem;font-weight:700;margin-bottom:1rem}
+    .project-list{display:flex;flex-direction:column;gap:.75rem}
+    .project-row{background:#fff;border:1px solid #E5E0D5;border-radius:8px;padding:1.1rem 1.25rem;display:flex;align-items:flex-start;gap:1.25rem}
+    .project-row:hover{border-color:#E8591A}
+    .project-info{flex:1;min-width:0}
+    .project-title{font-weight:700;font-size:.9rem;color:#1A1A1A;margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
+    .badge{font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:100px;background:rgba(232,89,26,.1);color:#E8591A;border:1px solid rgba(232,89,26,.25)}
+    .project-desc{font-size:.78rem;color:#6B6B6B;line-height:1.5;margin-bottom:.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tag-list{display:flex;flex-wrap:wrap;gap:.3rem}
+    .tag{background:#EDE8DE;border:1px solid #D8D2C5;color:#5A5550;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.62rem}
+    .project-actions{display:flex;gap:.5rem;flex-shrink:0;align-items:center}
+    .sort-badge{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#8A8480;background:#F0EDE6;padding:2px 7px;border-radius:4px}
+    .empty{text-align:center;padding:3rem;color:#8A8480;font-size:.875rem;background:#fff;border:1px dashed #D8D2C5;border-radius:8px}
+    @media(max-width:640px){
+      .form-grid{grid-template-columns:1fr}
+      .form-full{grid-column:auto}
+      .project-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Arvine Felix · <span>Admin</span></div>
+  <div class="nav-right">
+    <a href="/" target="_blank">← View Site</a>
+    <a href="/admin/logout">Logout</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>Projects</h1>
+  <p class="page-sub">Add, edit, or remove portfolio projects. Changes appear on the site instantly.</p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <!-- ── ADD PROJECT FORM ── -->
+  <div class="add-card">
+    <h2>Add New Project</h2>
+    <form method="POST" action="/admin/projects/add">
+      <div class="form-grid">
+        <div class="form-full">
+          <label>Title *</label>
+          <input type="text" name="title" placeholder="e.g. CVForge AI" required/>
+        </div>
+        <div class="form-full">
+          <label>Description *</label>
+          <textarea name="description" placeholder="What does this project do? What stack does it use?"></textarea>
+        </div>
+        <div class="form-full">
+          <label>Tags (comma-separated)</label>
+          <input type="text" name="tags" placeholder="Flask, M-Pesa, Gemini AI, PostgreSQL"/>
+        </div>
+        <div>
+          <label>Live URL</label>
+          <input type="text" name="url" placeholder="https://example.com or #"/>
+        </div>
+        <div>
+          <label>GitHub URL</label>
+          <input type="text" name="github" placeholder="https://github.com/arvineee/..."/>
+        </div>
+        <div>
+          <label>Sort Order</label>
+          <input type="number" name="sort_order" value="0" min="0"/>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:.1rem">
+          <div class="check-row">
+            <input type="checkbox" name="featured" id="add_featured"/>
+            <span>Mark as Featured</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem">
+        <button type="submit" class="btn btn-primary">Add Project</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ── PROJECT LIST ── -->
+  <div class="section-title">All Projects ({{ projects|length }})</div>
+
+  {% if projects %}
+  <div class="project-list">
+    {% for p in projects %}
+    <div class="project-row">
+      <div class="project-info">
+        <div class="project-title">
+          {{ p.title }}
+          {% if p.featured %}<span class="badge">Featured</span>{% endif %}
+          <span class="sort-badge">#{{ p.sort_order }}</span>
+        </div>
+        <div class="project-desc">{{ p.description }}</div>
+        <div class="tag-list">
+          {% for tag in p.tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="project-actions">
+        <a href="/admin/projects/{{ p.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
+        <form method="POST" action="/admin/projects/{{ p.id }}/delete"
+              onsubmit="return confirm('Delete \'{{ p.title }}\'? This cannot be undone.')">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">No projects yet. Add your first one above.</div>
+  {% endif %}
+</div>
+
+</body>
+</html>
+

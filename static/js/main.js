@@ -1,198 +1,135 @@
-/* ── Navbar scroll effect ──────────────────────────────────────────────────── */
+/* ── Navbar scroll effect ─────────────────────────────────────────────────── */
 window.addEventListener('scroll', () => {
   const navbar = document.getElementById('navbar');
   if (navbar) {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
   }
 });
 
-/* ── Mobile menu ───────────────────────────────────────────────────────────── */
-const menuBtn = document.getElementById('menuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
+/* ── Mobile menu (hamburger) ──────────────────────────────────────────────── */
+const menuBtn      = document.getElementById('menuBtn');
+const mobileMenu   = document.getElementById('mobileMenu');
 const hamburgerIcon = document.getElementById('hamburgerIcon');
 
-if (menuBtn && mobileMenu && hamburgerIcon) {
+const HAMBURGER = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>`;
+const CLOSE     = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>`;
+
+if (menuBtn && mobileMenu) {
   menuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-    
-    if (!mobileMenu.classList.contains('hidden')) {
-      hamburgerIcon.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6h12v12" />
-      `;
-    } else {
-      hamburgerIcon.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-      `;
-    }
+    const isOpen = mobileMenu.style.display === 'flex';
+    mobileMenu.style.display = isOpen ? 'none' : 'flex';
+    if (hamburgerIcon) hamburgerIcon.innerHTML = isOpen ? HAMBURGER : CLOSE;
   });
 }
 
-// Close mobile menu on link click
+/* Close menu when any mobile link is tapped */
 document.querySelectorAll('.mobile-link').forEach(link => {
   link.addEventListener('click', () => {
-    if (mobileMenu && hamburgerIcon) {
-      mobileMenu.classList.add('hidden');
-      hamburgerIcon.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-      `;
-    }
+    if (mobileMenu) mobileMenu.style.display = 'none';
+    if (hamburgerIcon) hamburgerIcon.innerHTML = HAMBURGER;
   });
 });
 
-/* ── Smooth Scroll for All Anchor Links ────────────────────────────────────── */
+/* ── Smooth scroll ────────────────────────────────────────────────────────── */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    if (this.getAttribute('href') === '#') return;
-    
+  anchor.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
     e.preventDefault();
-    const targetId = this.getAttribute('href');
-    const targetElement = document.querySelector(targetId);
-    
-    if (targetElement) {
-      const navbarHeight = 80; 
-      const elementPosition = targetElement.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - navbarHeight;
-
+    const target = document.querySelector(href);
+    if (target) {
       window.scrollTo({
-        top: offsetPosition,
+        top: target.getBoundingClientRect().top + window.scrollY - 80,
         behavior: 'smooth'
       });
     }
   });
 });
 
-/* ── High Conversion Typewriter Engineering phrases ───────────────────────── */
+/* ── Typewriter ───────────────────────────────────────────────────────────── */
 const phrases = [
   'ship optimized multi-tenant SaaS tools inside rigid deadlines',
-  'wire flawless automated M-Pesa STK payment gateways',
+  'wire flawless M-Pesa STK payment gateways',
   'dominate organic search indexing visibility curves',
   'build reliable relational databases that never crash under load',
   'integrate advanced generative AI features into simple services',
   'write strict, human-readable Python code architectures',
-  'provision high-performance WSGI server setups cleanly'
+  'provision high-performance WSGI server setups cleanly',
 ];
 
-let phraseIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
+let phraseIndex = 0, charIndex = 0, isDeleting = false;
 const typeEl = document.getElementById('typewriter');
 
 function type() {
   if (!typeEl) return;
   const current = phrases[phraseIndex];
-  if (isDeleting) {
-    typeEl.textContent = current.substring(0, charIndex - 1);
-    charIndex--;
-  } else {
-    typeEl.textContent = current.substring(0, charIndex + 1);
-    charIndex++;
-  }
+  typeEl.textContent = isDeleting
+    ? current.substring(0, charIndex - 1)
+    : current.substring(0, charIndex + 1);
+  isDeleting ? charIndex-- : charIndex++;
 
   let delay = isDeleting ? 30 : 60;
-
-  if (!isDeleting && charIndex === current.length) {
-    delay = 2500;
-    isDeleting = true;
-  } else if (isDeleting && charIndex === 0) {
-    isDeleting = false;
-    phraseIndex = (phraseIndex + 1) % phrases.length;
-    delay = 400;
-  }
-
+  if (!isDeleting && charIndex === current.length) { delay = 2500; isDeleting = true; }
+  else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; delay = 400; }
   setTimeout(type, delay);
 }
+document.addEventListener('DOMContentLoaded', type);
 
-// Start execution safely on layout instantiation
+/* ── Scroll reveal ────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  type();
-});
-
-/* ── Scroll reveal observer pipeline ─────────────────────────────────────── */
-const reveals = document.querySelectorAll('.reveal');
-if (reveals.length > 0) {
-  const revealObserver = new IntersectionObserver((entries) => {
+  const reveals = document.querySelectorAll('.reveal');
+  if (!reveals.length) return;
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.classList.add('visible');
-        }, i * 60);
-        revealObserver.unobserve(entry.target);
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+  reveals.forEach(el => observer.observe(el));
+});
 
-  reveals.forEach(el => revealObserver.observe(el));
-}
-
-/* ── Contact form processing (Asynchronous AJAX Engine) ──────────────────── */
+/* ── Contact form ─────────────────────────────────────────────────────────── */
 async function submitContact() {
-  const name = document.getElementById('fname') ? document.getElementById('fname').value.trim() : '';
-  const email = document.getElementById('femail') ? document.getElementById('femail').value.trim() : '';
-  const subject = document.getElementById('fsubject') ? document.getElementById('fsubject').value.trim() : '';
-  const message = document.getElementById('fmessage') ? document.getElementById('fmessage').value.trim() : '';
-  const alert = document.getElementById('formAlert');
-  const btn = document.getElementById('submitBtn');
+  const name    = document.getElementById('fname')?.value.trim()    || '';
+  const email   = document.getElementById('femail')?.value.trim()   || '';
+  const subject = document.getElementById('fsubject')?.value.trim() || '';
+  const message = document.getElementById('fmessage')?.value.trim() || '';
+  const btn     = document.getElementById('submitBtn');
   const btnText = document.getElementById('btnText');
-  const btnSpinner = document.getElementById('btnSpinner');
+  const spinner = document.getElementById('btnSpinner');
 
-  if (!name || !email || !message) {
-    showAlert('Please supply all mandatory input values before submitting.', 'error');
-    return;
-  }
-  if (!isValidEmail(email)) {
-    showAlert('The target communication endpoint structure is invalid.', 'error');
-    return;
-  }
+  if (!name || !email || !message) { showAlert('Please fill in all required fields.', 'error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('Please enter a valid email address.', 'error'); return; }
 
-  if (btn && btnText && btnSpinner && alert) {
-    btn.disabled = true;
-    btnText.textContent = 'Transmitting Metrics...';
-    btnSpinner.classList.remove('hidden');
-    alert.classList.add('hidden');
+  btn.disabled = true;
+  btnText.textContent = 'Sending...';
+  spinner.style.display = 'inline-block';
 
-    try {
-      const response = await fetch('/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        showAlert(data.message, 'success');
-        document.getElementById('fname').value = '';
-        document.getElementById('femail').value = '';
-        document.getElementById('fsubject').value = '';
-        document.getElementById('fmessage').value = '';
-      } else {
-        showAlert(data.error || 'A processing fault structural error occurred.', 'error');
-      }
-    } catch (err) {
-      showAlert('Network layer interruption. Please connect immediately using the instant WhatsApp backup link.', 'error');
-    } finally {
-      btn.disabled = false;
-      btnText.textContent = 'Transmit Architecture Briefing';
-      btnSpinner.classList.add('hidden');
+  try {
+    const res  = await fetch('/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, subject, message }) });
+    const data = await res.json();
+    if (data.success) {
+      showAlert(data.message, 'success');
+      ['fname','femail','fsubject','fmessage'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    } else {
+      showAlert(data.error || 'Something went wrong. Please try WhatsApp.', 'error');
     }
+  } catch {
+    showAlert('Network error. Please use WhatsApp directly.', 'error');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Send Project Brief';
+    spinner.style.display = 'none';
   }
 }
 
 function showAlert(msg, type) {
-  const alert = document.getElementById('formAlert');
-  if (alert) {
-    alert.textContent = msg;
-    alert.className = type === 'success' ? 'alert-success' : 'alert-error';
-    alert.classList.remove('hidden');
-  }
+  const el = document.getElementById('formAlert');
+  if (!el) return;
+  el.textContent = msg;
+  el.className   = type === 'success' ? 'alert-success' : 'alert-error';
+  el.style.display = 'block';
 }
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 

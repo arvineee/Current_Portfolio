@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Edit Project — Arvine Felix Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F7F4EE;color:#1A1A1A;min-height:100vh}
+    nav{background:#fff;border-bottom:1px solid #E5E0D5;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .nav-brand{font-weight:700;font-size:.95rem}
+    .nav-brand span{color:#E8591A}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .nav-right a{font-size:.8rem;color:#6B6B6B;text-decoration:none}
+    .nav-right a:hover{color:#E8591A}
+    .wrap{max-width:680px;margin:0 auto;padding:2rem 1.5rem}
+    h1{font-size:1.4rem;font-weight:700;margin-bottom:.3rem}
+    .page-sub{font-size:.85rem;color:#8A8480;margin-bottom:2rem}
+    .card{background:#fff;border:1px solid #E5E0D5;border-radius:10px;padding:2rem}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-full{grid-column:1/-1}
+    label{display:block;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem}
+    input[type=text],input[type=url],input[type=number],textarea{width:100%;background:#FAF8F4;border:1px solid #D8D2C5;border-radius:6px;padding:.7rem .9rem;font-size:.875rem;font-family:'Inter',sans-serif;color:#1A1A1A;outline:none;transition:border-color .2s,box-shadow .2s}
+    input:focus,textarea:focus{border-color:#E8591A;box-shadow:0 0 0 3px rgba(232,89,26,.08)}
+    textarea{resize:vertical;min-height:110px}
+    .check-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0}
+    .check-row input{width:auto;accent-color:#E8591A}
+    .check-row span{font-size:.875rem;color:#3D3D3D}
+    .actions{display:flex;gap:.75rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EDE6}
+    .btn{display:inline-flex;align-items:center;padding:.7rem 1.4rem;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:background .2s,transform .15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:#E8591A;color:#fff}
+    .btn-primary:hover{background:#CF4C10}
+    .btn-outline{background:transparent;border:1.5px solid #D8D2C5;color:#3D3D3D}
+    .btn-outline:hover{border-color:#1A1A1A}
+    @media(max-width:580px){
+      .form-grid{grid-template-columns:1fr}
+      .form-full{grid-column:auto}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Arvine Felix · <span>Admin</span></div>
+  <div class="nav-right">
+    <a href="/admin">← Dashboard</a>
+    <a href="/admin/logout">Logout</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>Edit Project</h1>
+  <p class="page-sub">Update the details below and save.</p>
+
+  <div class="card">
+    <form method="POST">
+      <div class="form-grid">
+        <div class="form-full">
+          <label>Title *</label>
+          <input type="text" name="title" value="{{ project.title }}" required/>
+        </div>
+        <div class="form-full">
+          <label>Description *</label>
+          <textarea name="description">{{ project.description }}</textarea>
+        </div>
+        <div class="form-full">
+          <label>Tags (comma-separated)</label>
+          <input type="text" name="tags" value="{{ project.tags | join(', ') }}"/>
+        </div>
+        <div>
+          <label>Live URL</label>
+          <input type="text" name="url" value="{{ project.url }}"/>
+        </div>
+        <div>
+          <label>GitHub URL</label>
+          <input type="text" name="github" value="{{ project.github }}"/>
+        </div>
+        <div>
+          <label>Sort Order</label>
+          <input type="number" name="sort_order" value="{{ project.sort_order }}" min="0"/>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <div class="check-row">
+            <input type="checkbox" name="featured" id="featured" {% if project.featured %}checked{% endif %}/>
+            <span>Mark as Featured</span>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="/admin" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Login — Arvine Felix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F7F4EE;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+    .card{background:#fff;border:1px solid #E5E0D5;border-radius:12px;padding:2.5rem;width:100%;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+    .logo{font-weight:700;font-size:1.1rem;color:#1A1A1A;margin-bottom:.25rem}
+    .sub{font-size:.8rem;color:#8A8480;margin-bottom:2rem}
+    label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;margin-bottom:.5rem}
+    input[type=password]{width:100%;background:#FAF8F4;border:1px solid #D8D2C5;border-radius:7px;padding:.85rem 1rem;font-size:.9rem;color:#1A1A1A;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:1.25rem}
+    input[type=password]:focus{border-color:#E8591A;box-shadow:0 0 0 3px rgba(232,89,26,.1)}
+    button{width:100%;background:#E8591A;color:#fff;font-weight:600;font-size:.9rem;padding:.9rem;border:none;border-radius:7px;cursor:pointer;transition:background .2s}
+    button:hover{background:#CF4C10}
+    .error{background:#FEF0ED;border:1px solid #F5B8A6;color:#C23F1A;border-radius:7px;padding:.85rem 1rem;font-size:.8rem;margin-bottom:1.25rem}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Arvine Felix · Admin</div>
+    <div class="sub">Portfolio management panel</div>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Enter admin password" autofocus required/>
+      <button type="submit">Sign In →</button>
+    </form>
+  </div>
+</body>
+</html>
+
