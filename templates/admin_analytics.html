@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Analytics — Arvine Felix Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F7F4EE;color:#1A1A1A;min-height:100vh}
+
+    /* Nav */
+    nav{background:#fff;border-bottom:1px solid #E5E0D5;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .nav-brand{font-weight:700;font-size:.95rem}
+    .nav-brand span{color:#E8591A}
+    .nav-links{display:flex;align-items:center;gap:1.25rem}
+    .nav-links a{font-size:.8rem;color:#6B6B6B;text-decoration:none;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:#E8591A;font-weight:600}
+
+    /* Layout */
+    .wrap{max-width:1080px;margin:0 auto;padding:2rem 1.5rem}
+    .page-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+    h1{font-size:1.4rem;font-weight:700}
+    .page-sub{font-size:.82rem;color:#8A8480;margin-top:.25rem}
+
+    /* Period switcher */
+    .period-tabs{display:flex;gap:.4rem;background:#EDE8DE;padding:4px;border-radius:8px}
+    .period-tab{padding:.4rem .9rem;border-radius:5px;font-size:.75rem;font-weight:600;color:#6B6B6B;text-decoration:none;transition:background .2s,color .2s}
+    .period-tab.active,.period-tab:hover{background:#fff;color:#E8591A;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+    /* Stat cards row */
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+    .stat-card{background:#fff;border:1px solid #E5E0D5;border-radius:10px;padding:1.25rem 1.5rem}
+    .stat-label{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem}
+    .stat-val{font-size:2rem;font-weight:700;color:#1A1A1A;line-height:1}
+    .stat-sub{font-size:.72rem;color:#B0A898;margin-top:.35rem}
+
+    /* Grid layout */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+    .grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+
+    /* Panel */
+    .panel{background:#fff;border:1px solid #E5E0D5;border-radius:10px;padding:1.5rem}
+    .panel-title{font-size:.82rem;font-weight:700;color:#1A1A1A;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;justify-content:space-between}
+    .panel-title span{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#8A8480;font-weight:400}
+
+    /* Bar rows */
+    .bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+    .bar-label{font-size:.75rem;color:#3D3D3D;width:110px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bar-track{flex:1;background:#F0EDE6;border-radius:100px;height:7px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:100px;background:#E8591A;transition:width .6s ease}
+    .bar-fill.blue{background:#3B82F6}
+    .bar-fill.green{background:#22C55E}
+    .bar-fill.purple{background:#8B5CF6}
+    .bar-count{font-size:.72rem;color:#8A8480;width:32px;text-align:right;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+
+    /* Donut chart */
+    .donut-wrap{display:flex;align-items:center;gap:1.5rem}
+    .donut-legend{display:flex;flex-direction:column;gap:.55rem;flex:1}
+    .legend-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:#3D3D3D}
+    .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+    /* Chart canvas */
+    .chart-wrap{position:relative;height:160px;margin-top:.5rem}
+
+    /* Recent table */
+    .recent-table{width:100%;border-collapse:collapse;font-size:.75rem}
+    .recent-table th{text-align:left;padding:.5rem .75rem;font-size:.65rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;border-bottom:1px solid #F0EDE6;white-space:nowrap}
+    .recent-table td{padding:.55rem .75rem;border-bottom:1px solid #F7F4EE;color:#3D3D3D;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .recent-table tr:last-child td{border-bottom:none}
+    .recent-table tr:hover td{background:#FDFCFA}
+    .device-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.62rem;font-weight:600;font-family:'JetBrains Mono',monospace}
+    .device-mobile{background:#FEF3C7;color:#92400E}
+    .device-desktop{background:#DBEAFE;color:#1E40AF}
+    .device-tablet{background:#F3E8FF;color:#6B21A8}
+
+    /* Empty state */
+    .empty{text-align:center;padding:2.5rem;color:#8A8480;font-size:.82rem}
+
+    @media(max-width:900px){
+      .stat-row{grid-template-columns:1fr 1fr}
+      .grid-3{grid-template-columns:1fr}
+      .grid-2{grid-template-columns:1fr}
+    }
+    @media(max-width:480px){
+      .stat-row{grid-template-columns:1fr 1fr}
+      .stat-val{font-size:1.5rem}
+      .bar-label{width:80px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Arvine Felix · <span>Admin</span></div>
+  <div class="nav-links">
+    <a href="/admin">Projects</a>
+    <a href="/admin/analytics" class="active">Analytics</a>
+    <a href="/" target="_blank">View Site</a>
+    <a href="/admin/logout">Logout</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <div>
+      <h1>Visitor Analytics</h1>
+      <div class="page-sub">Real-time traffic data — no third-party trackers</div>
+    </div>
+    <div class="period-tabs">
+      <a href="?days=7"  class="period-tab {% if days==7  %}active{% endif %}">7d</a>
+      <a href="?days=30" class="period-tab {% if days==30 %}active{% endif %}">30d</a>
+      <a href="?days=90" class="period-tab {% if days==90 %}active{% endif %}">90d</a>
+    </div>
+  </div>
+
+  <!-- ── STAT CARDS ── -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Visits</div>
+      <div class="stat-val">{{ data.total }}</div>
+      <div class="stat-sub">Last {{ days }} days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Unique Visitors</div>
+      <div class="stat-val">{{ data.unique }}</div>
+      <div class="stat-sub">By IP address</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Top Country</div>
+      <div class="stat-val" style="font-size:1.1rem;padding-top:.35rem">
+        {{ data.countries[0].country if data.countries else '—' }}
+      </div>
+      <div class="stat-sub">{{ data.countries[0].cnt if data.countries else 0 }} visits</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Top Page</div>
+      <div class="stat-val" style="font-size:1.1rem;padding-top:.35rem;font-family:'JetBrains Mono',monospace">
+        {{ data.pages[0].path if data.pages else '—' }}
+      </div>
+      <div class="stat-sub">{{ data.pages[0].cnt if data.pages else 0 }} views</div>
+    </div>
+  </div>
+
+  <!-- ── DAILY CHART + DEVICES ── -->
+  <div class="grid-3">
+
+    <!-- Daily trend chart -->
+    <div class="panel">
+      <div class="panel-title">Daily Visits <span>Last 14 days</span></div>
+      {% if data.daily %}
+      <div class="chart-wrap">
+        <canvas id="dailyChart"></canvas>
+      </div>
+      {% else %}
+      <div class="empty">No data yet</div>
+      {% endif %}
+    </div>
+
+    <!-- Devices donut -->
+    <div class="panel">
+      <div class="panel-title">Devices</div>
+      {% if data.devices %}
+      {% set dev_total = data.devices | sum(attribute='cnt') %}
+      <div class="donut-wrap">
+        <canvas id="deviceChart" width="90" height="90" style="flex-shrink:0"></canvas>
+        <div class="donut-legend">
+          {% set colors = ['#E8591A','#3B82F6','#22C55E','#8B5CF6'] %}
+          {% for d in data.devices %}
+          <div class="legend-item">
+            <span class="legend-dot" style="background:{{ colors[loop.index0 % 4] }}"></span>
+            <span>{{ d.device|capitalize }} &nbsp;<strong>{{ ((d.cnt / dev_total) * 100)|round(0)|int }}%</strong></span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="empty">No data</div>
+      {% endif %}
+    </div>
+
+    <!-- Browsers -->
+    <div class="panel">
+      <div class="panel-title">Browsers</div>
+      {% if data.browsers %}
+      {% set br_max = data.browsers[0].cnt %}
+      {% for b in data.browsers %}
+      <div class="bar-row">
+        <div class="bar-label">{{ b.browser }}</div>
+        <div class="bar-track"><div class="bar-fill blue" style="width:{{ ((b.cnt / br_max) * 100)|round(0)|int }}%"></div></div>
+        <div class="bar-count">{{ b.cnt }}</div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty">No data</div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- ── COUNTRIES + PAGES + REFERRERS ── -->
+  <div class="grid-3">
+
+    <!-- Countries -->
+    <div class="panel">
+      <div class="panel-title">Top Countries</div>
+      {% if data.countries %}
+      {% set c_max = data.countries[0].cnt %}
+      {% for c in data.countries %}
+      <div class="bar-row">
+        <div class="bar-label">{{ c.country }}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ ((c.cnt / c_max) * 100)|round(0)|int }}%"></div></div>
+        <div class="bar-count">{{ c.cnt }}</div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty">No data</div>
+      {% endif %}
+    </div>
+
+    <!-- Top pages -->
+    <div class="panel">
+      <div class="panel-title">Top Pages</div>
+      {% if data.pages %}
+      {% set p_max = data.pages[0].cnt %}
+      {% for p in data.pages %}
+      <div class="bar-row">
+        <div class="bar-label" style="font-family:'JetBrains Mono',monospace;font-size:.7rem">{{ p.path }}</div>
+        <div class="bar-track"><div class="bar-fill green" style="width:{{ ((p.cnt / p_max) * 100)|round(0)|int }}%"></div></div>
+        <div class="bar-count">{{ p.cnt }}</div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty">No data</div>
+      {% endif %}
+    </div>
+
+    <!-- Referrers -->
+    <div class="panel">
+      <div class="panel-title">Referrers</div>
+      {% if data.referrers %}
+      {% set r_max = data.referrers[0].cnt %}
+      {% for r in data.referrers %}
+      <div class="bar-row">
+        <div class="bar-label">{{ r.referrer | replace('https://','') | replace('http://','') | truncate(22, true, '') }}</div>
+        <div class="bar-track"><div class="bar-fill purple" style="width:{{ ((r.cnt / r_max) * 100)|round(0)|int }}%"></div></div>
+        <div class="bar-count">{{ r.cnt }}</div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty">No external referrers yet</div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- ── RECENT VISITORS ── -->
+  <div class="panel" style="margin-bottom:2rem;overflow-x:auto">
+    <div class="panel-title">Recent Visitors <span>Last 20</span></div>
+    {% if data.recent %}
+    <table class="recent-table">
+      <thead>
+        <tr>
+          <th>Time (UTC)</th>
+          <th>Page</th>
+          <th>Country</th>
+          <th>City</th>
+          <th>Device</th>
+          <th>Browser</th>
+          <th>OS</th>
+          <th>Referrer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in data.recent %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#8A8480">{{ v.timestamp[:16] }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:.7rem">{{ v.path }}</td>
+          <td>{{ v.country }}</td>
+          <td>{{ v.city or '—' }}</td>
+          <td>
+            <span class="device-badge device-{{ v.device }}">{{ v.device }}</span>
+          </td>
+          <td>{{ v.browser }}</td>
+          <td>{{ v.os }}</td>
+          <td style="color:#8A8480;font-size:.68rem">
+            {{ v.referrer | replace('https://','') | replace('http://','') | truncate(28, true, '…') if v.referrer else '—' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">No visitors recorded yet. Visit the homepage to test tracking.</div>
+    {% endif %}
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+  // ── Daily line chart (pure canvas, no library needed) ─────────────────────
+  (function() {
+    const canvas = document.getElementById('dailyChart');
+    if (!canvas) return;
+
+    const raw = {{ data.daily | tojson }};
+    if (!raw.length) return;
+
+    const labels = raw.map(r => r.day.slice(5));   // MM-DD
+    const values = raw.map(r => r.cnt);
+    const max    = Math.max(...values, 1);
+
+    const ctx  = canvas.getContext('2d');
+    const W    = canvas.parentElement.offsetWidth - 2;
+    const H    = 150;
+    canvas.width  = W;
+    canvas.height = H;
+
+    const pad = { top: 12, right: 12, bottom: 28, left: 28 };
+    const cW  = W - pad.left - pad.right;
+    const cH  = H - pad.top  - pad.bottom;
+    const n   = values.length;
+
+    function xOf(i) { return pad.left + (i / Math.max(n - 1, 1)) * cW; }
+    function yOf(v) { return pad.top  + (1 - v / max) * cH; }
+
+    // Grid lines
+    ctx.strokeStyle = '#F0EDE6';
+    ctx.lineWidth   = 1;
+    for (let g = 0; g <= 4; g++) {
+      const y = pad.top + (g / 4) * cH;
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke();
+    }
+
+    // Gradient fill
+    const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + cH);
+    grad.addColorStop(0,   'rgba(232,89,26,0.18)');
+    grad.addColorStop(1,   'rgba(232,89,26,0)');
+    ctx.beginPath();
+    ctx.moveTo(xOf(0), yOf(values[0]));
+    for (let i = 1; i < n; i++) ctx.lineTo(xOf(i), yOf(values[i]));
+    ctx.lineTo(xOf(n - 1), pad.top + cH);
+    ctx.lineTo(xOf(0),     pad.top + cH);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(xOf(0), yOf(values[0]));
+    for (let i = 1; i < n; i++) ctx.lineTo(xOf(i), yOf(values[i]));
+    ctx.strokeStyle = '#E8591A';
+    ctx.lineWidth   = 2;
+    ctx.lineJoin    = 'round';
+    ctx.stroke();
+
+    // Dots
+    values.forEach((v, i) => {
+      ctx.beginPath();
+      ctx.arc(xOf(i), yOf(v), 3, 0, Math.PI * 2);
+      ctx.fillStyle   = '#E8591A';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth   = 1.5;
+      ctx.stroke();
+    });
+
+    // X labels (every other one on small)
+    ctx.fillStyle  = '#B0A898';
+    ctx.font       = '10px JetBrains Mono, monospace';
+    ctx.textAlign  = 'center';
+    labels.forEach((l, i) => {
+      if (n > 10 && i % 2 !== 0) return;
+      ctx.fillText(l, xOf(i), H - 6);
+    });
+  })();
+
+  // ── Device donut chart ────────────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('deviceChart');
+    if (!canvas) return;
+
+    const raw    = {{ data.devices | tojson }};
+    if (!raw.length) return;
+
+    const total  = raw.reduce((s, d) => s + d.cnt, 0);
+    const colors = ['#E8591A', '#3B82F6', '#22C55E', '#8B5CF6'];
+    const ctx    = canvas.getContext('2d');
+    const cx = 45, cy = 45, r = 38, inner = 22;
+
+    let angle = -Math.PI / 2;
+    raw.forEach((d, i) => {
+      const slice = (d.cnt / total) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, angle, angle + slice);
+      ctx.closePath();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+      angle += slice;
+    });
+
+    // Donut hole
+    ctx.beginPath();
+    ctx.arc(cx, cy, inner, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    // Centre label
+    ctx.fillStyle  = '#1A1A1A';
+    ctx.font       = 'bold 13px Inter, sans-serif';
+    ctx.textAlign  = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(total, cx, cy);
+  })();
+</script>
+
+</body>
+</html>
+

@@ -7,17 +7,16 @@ import db as database
 app = Flask(__name__)
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-app.config['MAIL_SERVER']       = config.MAIL_SERVER
-app.config['MAIL_PORT']         = config.MAIL_PORT
-app.config['MAIL_USE_TLS']      = config.MAIL_USE_TLS
-app.config['MAIL_USERNAME']     = config.MAIL_USERNAME
-app.config['MAIL_PASSWORD']     = config.MAIL_PASSWORD
+app.config['MAIL_SERVER']         = config.MAIL_SERVER
+app.config['MAIL_PORT']           = config.MAIL_PORT
+app.config['MAIL_USE_TLS']        = config.MAIL_USE_TLS
+app.config['MAIL_USERNAME']       = config.MAIL_USERNAME
+app.config['MAIL_PASSWORD']       = config.MAIL_PASSWORD
 app.config['MAIL_DEFAULT_SENDER'] = config.MAIL_DEFAULT_SENDER
-app.config['SECRET_KEY']        = config.SECRET_KEY
+app.config['SECRET_KEY']          = config.SECRET_KEY
 
 mail = Mail(app)
 
-# Initialise DB + seed from config.PROJECTS on first run
 with app.app_context():
     database.init_db()
 
@@ -42,7 +41,100 @@ def set_security_headers(response):
     return response
 
 
-# ── ADMIN AUTH DECORATOR ──────────────────────────────────────────────────────
+# ── VISITOR TRACKING HELPERS ──────────────────────────────────────────────────
+def _parse_ua(ua):
+    """Return (device, browser, os) strings from User-Agent."""
+    ua = ua or ''
+    ul = ua.lower()
+
+    # Device
+    if any(x in ul for x in ('mobile', 'android', 'iphone')):
+        device = 'mobile'
+    elif 'tablet' in ul or 'ipad' in ul:
+        device = 'tablet'
+    else:
+        device = 'desktop'
+
+    # Browser
+    if 'edg' in ul:
+        browser = 'Edge'
+    elif 'opr' in ul or 'opera' in ul:
+        browser = 'Opera'
+    elif 'chrome' in ul:
+        browser = 'Chrome'
+    elif 'firefox' in ul:
+        browser = 'Firefox'
+    elif 'safari' in ul:
+        browser = 'Safari'
+    else:
+        browser = 'Other'
+
+    # OS
+    if 'windows' in ul:
+        os_name = 'Windows'
+    elif 'android' in ul:
+        os_name = 'Android'
+    elif 'iphone' in ul or 'ipad' in ul:
+        os_name = 'iOS'
+    elif 'mac' in ul:
+        os_name = 'macOS'
+    elif 'linux' in ul:
+        os_name = 'Linux'
+    else:
+        os_name = 'Other'
+
+    return device, browser, os_name
+
+
+def _get_location(ip):
+    """Return (country, city) via ip-api.com free tier (no key needed)."""
+    try:
+        import urllib.request, json as _json
+        with urllib.request.urlopen(
+            f'http://ip-api.com/json/{ip}?fields=country,city,status',
+            timeout=2
+        ) as resp:
+            data = _json.loads(resp.read())
+            if data.get('status') == 'success':
+                return data.get('country', 'Unknown'), data.get('city', '')
+    except Exception:
+        pass
+    return 'Unknown', ''
+
+
+def _real_ip():
+    """Get real IP behind PythonAnywhere's proxy."""
+    return (
+        request.headers.get('X-Forwarded-For', '').split(',')[0].strip()
+        or request.headers.get('X-Real-IP', '')
+        or request.remote_addr
+        or ''
+    )
+
+
+def track_visit():
+    """Log a page visit — skip bots and admin routes."""
+    path = request.path
+    # Skip admin, static, and bot-like paths
+    if path.startswith('/admin') or path.startswith('/static'):
+        return
+    ua = request.headers.get('User-Agent', '')
+    if any(b in ua.lower() for b in ('bot', 'crawler', 'spider', 'curl', 'wget', 'python-requests')):
+        return
+
+    ip       = _real_ip()
+    referrer = request.referrer or ''
+    # Strip own domain from referrer
+    if referrer and request.host in referrer:
+        referrer = ''
+
+    country, city    = _get_location(ip)
+    device, browser, os_name = _parse_ua(ua)
+
+    database.log_visitor(path, ip, country, city, device, browser, os_name, referrer)
+
+
+# ── ADMIN AUTH ────────────────────────────────────────────────────────────────
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -55,6 +147,7 @@ def login_required(f):
 # ── PUBLIC ROUTES ─────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
+    track_visit()
     projects = database.get_all_projects()
     return render_template('index.html',
                            projects=projects,
@@ -106,20 +199,17 @@ Full-Stack Software Developer · Nairobi, Kenya
         return jsonify({'success': False, 'error': 'Email dispatch failed. Please use WhatsApp instead.'}), 500
 
 
-# ── ADMIN: LOGIN / LOGOUT ──────────────────────────────────────────────────────
+# ── ADMIN: LOGIN / LOGOUT ─────────────────────────────────────────────────────
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
-
     error = None
     if request.method == 'POST':
-        pwd = request.form.get('password', '')
-        if pwd == config.ADMIN_PASSWORD:
+        if request.form.get('password', '') == config.ADMIN_PASSWORD:
             session['admin_logged_in'] = True
             return redirect(url_for('admin_dashboard'))
         error = 'Incorrect password.'
-
     return render_template('admin_login.html', error=error)
 
 
@@ -129,7 +219,7 @@ def admin_logout():
     return redirect(url_for('admin_login'))
 
 
-# ── ADMIN: DASHBOARD (list projects) ─────────────────────────────────────────
+# ── ADMIN: PROJECTS DASHBOARD ─────────────────────────────────────────────────
 @app.route('/admin')
 @login_required
 def admin_dashboard():
@@ -137,30 +227,24 @@ def admin_dashboard():
     return render_template('admin.html', projects=projects)
 
 
-# ── ADMIN: ADD PROJECT ────────────────────────────────────────────────────────
 @app.route('/admin/projects/add', methods=['POST'])
 @login_required
 def admin_add_project():
-    title       = request.form.get('title', '').strip()
-    description = request.form.get('description', '').strip()
-    tags_raw    = request.form.get('tags', '')
-    url         = request.form.get('url', '#').strip()
-    github      = request.form.get('github', '').strip()
-    featured    = request.form.get('featured') == 'on'
-    sort_order  = int(request.form.get('sort_order', 0) or 0)
-
-    tags = [t.strip() for t in tags_raw.split(',') if t.strip()]
-
+    title      = request.form.get('title', '').strip()
+    description= request.form.get('description', '').strip()
+    tags       = [t.strip() for t in request.form.get('tags', '').split(',') if t.strip()]
+    url        = request.form.get('url', '#').strip()
+    github     = request.form.get('github', '').strip()
+    featured   = request.form.get('featured') == 'on'
+    sort_order = int(request.form.get('sort_order', 0) or 0)
     if title and description:
         database.create_project(title, description, tags, url, github, featured, sort_order)
-        flash('Project added successfully.', 'success')
+        flash('Project added.', 'success')
     else:
         flash('Title and description are required.', 'error')
-
     return redirect(url_for('admin_dashboard'))
 
 
-# ── ADMIN: EDIT PROJECT (GET form + POST save) ────────────────────────────────
 @app.route('/admin/projects/<int:pid>/edit', methods=['GET', 'POST'])
 @login_required
 def admin_edit_project(pid):
@@ -168,31 +252,38 @@ def admin_edit_project(pid):
     if not project:
         flash('Project not found.', 'error')
         return redirect(url_for('admin_dashboard'))
-
     if request.method == 'POST':
-        title       = request.form.get('title', '').strip()
-        description = request.form.get('description', '').strip()
-        tags_raw    = request.form.get('tags', '')
-        url         = request.form.get('url', '#').strip()
-        github      = request.form.get('github', '').strip()
-        featured    = request.form.get('featured') == 'on'
-        sort_order  = int(request.form.get('sort_order', 0) or 0)
-        tags = [t.strip() for t in tags_raw.split(',') if t.strip()]
-
-        database.update_project(pid, title, description, tags, url, github, featured, sort_order)
+        tags = [t.strip() for t in request.form.get('tags', '').split(',') if t.strip()]
+        database.update_project(
+            pid,
+            request.form.get('title', '').strip(),
+            request.form.get('description', '').strip(),
+            tags,
+            request.form.get('url', '#').strip(),
+            request.form.get('github', '').strip(),
+            request.form.get('featured') == 'on',
+            int(request.form.get('sort_order', 0) or 0)
+        )
         flash('Project updated.', 'success')
         return redirect(url_for('admin_dashboard'))
-
     return render_template('admin_edit.html', project=project)
 
 
-# ── ADMIN: DELETE PROJECT ─────────────────────────────────────────────────────
 @app.route('/admin/projects/<int:pid>/delete', methods=['POST'])
 @login_required
 def admin_delete_project(pid):
     database.delete_project(pid)
     flash('Project deleted.', 'success')
     return redirect(url_for('admin_dashboard'))
+
+
+# ── ADMIN: ANALYTICS ──────────────────────────────────────────────────────────
+@app.route('/admin/analytics')
+@login_required
+def admin_analytics():
+    days = int(request.args.get('days', 30))
+    data = database.get_analytics(days)
+    return render_template('admin_analytics.html', data=data, days=days)
 
 
 if __name__ == '__main__':
