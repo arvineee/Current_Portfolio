@@ -13,9 +13,9 @@
     nav{background:#fff;border-bottom:1px solid #E5E0D5;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .nav-brand{font-weight:700;font-size:.95rem}
     .nav-brand span{color:#E8591A}
-    .nav-right{display:flex;align-items:center;gap:1rem}
-    .nav-right a{font-size:.8rem;color:#6B6B6B;text-decoration:none}
-    .nav-right a:hover{color:#E8591A}
+    .nav-links{display:flex;align-items:center;gap:1.25rem}
+    .nav-links a{font-size:.8rem;color:#6B6B6B;text-decoration:none;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:#E8591A;font-weight:600}
     /* Layout */
     .wrap{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
     h1{font-size:1.4rem;font-weight:700;margin-bottom:.3rem}
@@ -70,8 +70,10 @@
 
 <nav>
   <div class="nav-brand">Arvine Felix · <span>Admin</span></div>
-  <div class="nav-right">
-    <a href="/" target="_blank">← View Site</a>
+  <div class="nav-links">
+    <a href="/admin" class="active">Projects</a>
+    <a href="/admin/analytics">Analytics</a>
+    <a href="/" target="_blank">View Site</a>
     <a href="/admin/logout">Logout</a>
   </div>
 </nav>
@@ -165,4 +167,5 @@
 
 </body>
 </html>
+
 
