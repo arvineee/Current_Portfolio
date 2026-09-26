@@ -199,7 +199,7 @@ Web Developer · Nairobi, Kenya
         return jsonify({'success': False, 'error': 'Email dispatch failed. Please use WhatsApp instead.'}), 500
 
 
-app.route('/google8caacc303a714c4c.html')
+@app.route('/google8caacc303a714c4c.html')
 def verify():
     return render_template('google8caacc303a714c4c.html')
 
