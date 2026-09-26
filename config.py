@@ -13,9 +13,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
 OWNER_EMAIL = os.environ.get('MAIL_USERNAME', 'kiruifelix03@gmail.com')
 
-# ── BRANDING & BUSINESS COMMUNICATIONS MATRIX ─────────────────────────────────
-WHATSAPP_NUMBER = '+254700000000'   # ← UPDATE WITH YOUR REAL NUMBER
-PHONE_NUMBER = '+254700000000'      # ← UPDATE WITH YOUR REAL NUMBER
+# ── BRANDING & BUSINESS COMMUNICATIONS ────────────────────────────────────────
+WHATSAPP_NUMBER = '+254700459966'
+PHONE_NUMBER = '+254700459966'
 
 # ── LIVE PRODUCTION PROJECTS PORTFOLIO DATA ──────────────────────────────────
 PROJECTS = [
@@ -42,56 +42,56 @@ PROJECTS = [
     },
 ]
 
-# ── TRANSPARENT SERVICE INVESTMENT TIERS ─────────────────────────────────────
+# ── PRICING — WHAT THE CLIENT GETS, IN PLAIN TERMS ────────────────────────────
+# NOTE: figures below are a starting placeholder — update to your real rates.
 PLANS = [
     {
-        'name': 'Starter (MVP & Landing Tiers)',
-        'price': '$249',
-        'period': 'one-time investment',
-        'description': 'Establish market authority immediately. No low-grade visual templates, no slow builders you can\'t scale. Clean, hand-coded, raw speed performance.',
+        'name': 'Website / Landing Page',
+        'price': 'KES 10,000',
+        'period': 'one-time',
+        'description': 'A clean, fast, mobile-friendly website that makes your business look credible online and brings in enquiries — for shops, clinics, schools, churches, and small businesses.',
         'features': [
-            'Up to 5-page custom structural design',
-            'Ultra-fast mobile-first design (Core Web Vitals Optimized)',
-            'Secure contact form with asynchronous AJAX email delivery',
-            'Full structural semantic on-page SEO layout',
-            'Zero-downtime deployment setup on your preferred domain',
-            '30 days of comprehensive post-launch technical support',
+            'Up to 5 pages, designed around your business',
+            'Loads fast on phones — where most of your customers are',
+            'Contact form that emails you instantly',
+            'Set up to show up when people search for you on Google',
+            'Hosting and domain connection included',
+            '30 days of free support after launch',
         ],
         'cta': 'Get Started Now',
         'highlighted': False,
     },
     {
-        'name': 'Professional (SaaS & Application)',
-        'price': '$499',
-        'period': 'one-time investment',
-        'description': 'A secure, high-scale application platform. Fully customized database systems, advanced user workflows, payment pipelines, and complete dashboard control panels.',
+        'name': 'Web App / Business System',
+        'price': 'KES 15,000',
+        'period': 'one-time (from)',
+        'description': "A custom system built around how your business actually runs — logins, a database, an admin dashboard, and M-Pesa payments if you need them. The kind of tool you'd otherwise pay a monthly SaaS subscription for, except it's yours.",
         'features': [
-            'Custom Flask full-stack modular backend ecosystem',
-            'Production-ready relational database design & optimizations',
-            'Secure user authentication structure (OAuth & session managed)',
-            'African & Global payment integrations (M-Pesa STK Push / Stripe)',
-            'Dynamic Administrator panel to view logs, metrics, & content',
-            'Full JSON-LD Schema.org automation + Google News architecture',
-            '90 days of comprehensive post-launch technical support',
+            'Custom-built backend, not a rented template',
+            'Secure logins for staff, customers, or both',
+            'M-Pesa (STK Push) or card payments built in',
+            "An admin dashboard to see what's happening at a glance",
+            'Built to grow with you as your business grows',
+            '90 days of free support after launch',
         ],
-        'cta': 'Deploy My Product',
+        'cta': 'Start My Project',
         'highlighted': True,
     },
     {
-        'name': 'Enterprise (Custom Engineering)',
+        'name': 'Enterprise / Ongoing Partner',
         'price': 'Custom',
         'period': 'tailored quote',
-        'description': 'Complex multi-tenant architectures, deep generative AI pipelines, custom data extraction engines, or long-term dedicated software engineering architecture retainer.',
+        'description': 'For multi-branch operations, hospitals, or businesses that need something built specifically for them — plus ongoing help keeping it running and improving over time.',
         'features': [
-            'Everything included in the Professional tier',
-            'Advanced generative AI feature pipelines (Gemini / OpenAI APIs)',
-            'Multi-tenant SaaS workspace architectures and isolated databases',
-            'DevOps pipelines, automated server configurations & live telemetry',
-            'Guaranteed priority delivery timeline schedules',
-            'Flexible dedicated monthly infrastructure retainers available',
+            'Everything in the Web App tier',
+            'AI features where they genuinely help (not just for show)',
+            'Multi-branch / multi-location support',
+            'Priority delivery timelines',
+            'Optional monthly retainer for ongoing support & new features',
         ],
-        'cta': 'Schedule Technical Call',
+        'cta': 'Book a Call',
         'highlighted': False,
     },
 ]
+
 

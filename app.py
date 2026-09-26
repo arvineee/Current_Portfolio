@@ -179,19 +179,19 @@ def contact():
             recipients=[email],
             body=f"""Hi {name},
 
-Thank you for reaching out! I have received your project details and will respond within 24 hours.
+Thanks for reaching out! I've received your message and will get back to you within 24 hours with a clear plan and price.
 
 Subject: {subject}
 Message: {message}
 
-Direct channels:
+If it's urgent, feel free to message me directly:
 - WhatsApp: https://wa.me/{config.WHATSAPP_NUMBER.replace('+', '')}
 - X: https://x.com/Arvinefelix
 - LinkedIn: https://linkedin.com/in/arvinefelix
 
-Best regards,
+Talk soon,
 Arvine Felix
-Full-Stack Software Developer · Nairobi, Kenya
+Web Developer · Nairobi, Kenya
 """
         ))
         return jsonify({'success': True, 'message': 'Message sent! I will respond within 24 hours.'})
@@ -288,4 +288,5 @@ def admin_analytics():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
