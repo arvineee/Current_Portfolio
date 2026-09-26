@@ -157,8 +157,15 @@ def index():
                            owner_email=config.OWNER_EMAIL)
 
 
-@app.route('/contact', methods=['POST'])
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
+    if request.method == 'GET':
+        track_visit()
+        return render_template('contact.html',
+                               whatsapp=config.WHATSAPP_NUMBER,
+                               phone=config.PHONE_NUMBER,
+                               owner_email=config.OWNER_EMAIL)
+
     data    = request.get_json() or {}
     name    = data.get('name', '').strip()
     email   = data.get('email', '').strip()
@@ -223,6 +230,7 @@ def sitemap():
     today = date.today().isoformat()
     urls = [
         {'loc': f'{base}/', 'changefreq': 'weekly', 'priority': '1.0'},
+        {'loc': f'{base}/contact', 'changefreq': 'monthly', 'priority': '0.8'},
     ]
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
