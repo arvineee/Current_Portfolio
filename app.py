@@ -199,6 +199,10 @@ Web Developer · Nairobi, Kenya
         return jsonify({'success': False, 'error': 'Email dispatch failed. Please use WhatsApp instead.'}), 500
 
 
+app.route('/google8caacc303a714c4c.html')
+def verify():
+    return render_template('google8caacc303a714c4c.html')
+
 # ── ADMIN: LOGIN / LOGOUT ─────────────────────────────────────────────────────
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -287,6 +291,6 @@ def admin_analytics():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 
