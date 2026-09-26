@@ -203,6 +203,37 @@ Web Developer · Nairobi, Kenya
 def verify():
     return render_template('google8caacc303a714c4c.html')
 
+
+@app.route('/robots.txt')
+def robots():
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin",
+        "Disallow: /admin/",
+        f"Sitemap: {request.url_root.rstrip('/')}/sitemap.xml",
+    ]
+    return app.response_class("\n".join(lines), mimetype='text/plain')
+
+
+@app.route('/sitemap.xml')
+def sitemap():
+    from datetime import date
+    base = request.url_root.rstrip('/')
+    today = date.today().isoformat()
+    urls = [
+        {'loc': f'{base}/', 'changefreq': 'weekly', 'priority': '1.0'},
+    ]
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u in urls:
+        xml.append(
+            f"<url><loc>{u['loc']}</loc><lastmod>{today}</lastmod>"
+            f"<changefreq>{u['changefreq']}</changefreq><priority>{u['priority']}</priority></url>"
+        )
+    xml.append('</urlset>')
+    return app.response_class("\n".join(xml), mimetype='application/xml')
+
 # ── ADMIN: LOGIN / LOGOUT ─────────────────────────────────────────────────────
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -292,5 +323,6 @@ def admin_analytics():
 
 if __name__ == '__main__':
     app.run(debug=False)
+
 
 
