@@ -37,7 +37,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </noscript>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="preload" as="style" href="{{ url_for('static', filename='css/style.css') }}"
+        onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" /></noscript>
 
   <script type="application/ld+json">
   {
@@ -73,7 +75,7 @@
   <nav id="navbar" style="position:fixed;top:0;left:0;right:0;z-index:50;transition:box-shadow .3s;">
     <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;">
       <a href="#hero" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-        <img src="{{ url_for('static', filename='AF.jpg') }}" alt="AF" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #E8591A;" />
+        <img src="{{ url_for('static', filename='AF.jpg') }}" alt="Arval Web Solutions — Web Developer Nairobi Kenya" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #E8591A;" />
         <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;color:#1A1A1A;letter-spacing:-0.01em;">Arval Web Solutions</span>
       </a>
 
@@ -120,7 +122,7 @@
       <!-- Headline -->
       <h1 class="section-title" style="margin-bottom:1.5rem;font-size:clamp(2.6rem,6.5vw,4.4rem);">
         Stop losing customers.<br />
-        Get a website that&nbsp;<em style="font-style:italic;color:#E8591A;">actually works.</em>
+        Get a website that&nbsp;<em style="font-style:italic;color:#B34700;">actually works.</em>
       </h1>
 
       <p style="font-size:1.1rem;color:#585858;line-height:1.7;max-width:52ch;margin:0 auto 2.5rem;">
@@ -302,7 +304,7 @@
         <span class="eyebrow" style="display:block;margin-bottom:.75rem;">About Me</span>
         <h2 class="section-title" style="margin-bottom:1.5rem;">
           I build it properly,<br/>
-          <em style="font-style:italic;color:#E8591A;">the first time.</em>
+          <em style="font-style:italic;color:#B34700;">the first time.</em>
         </h2>
         <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:1rem;">
           I'm Arvine Felix — a self-taught full-stack developer based in Nairobi, Kenya. I build websites and custom software for businesses, from small shops to multi-branch hospitals.
@@ -322,9 +324,9 @@
         </div>
 
         <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
-          <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#E8591A;text-decoration:none;">X / @Arvinefelix</a>
-          <a href="https://linkedin.com/in/arvinefelix" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#E8591A;text-decoration:none;">LinkedIn</a>
-          <a href="https://arvalblognews.online" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#E8591A;text-decoration:none;">Arval Blog News</a>
+          <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#B34700;text-decoration:none;">X / @Arvinefelix</a>
+          <a href="https://linkedin.com/in/arvinefelix" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#B34700;text-decoration:none;">LinkedIn</a>
+          <a href="https://arvalblognews.online" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#B34700;text-decoration:none;">Arval Blog News</a>
         </div>
       </div>
 
@@ -392,7 +394,7 @@
         <div class="pricing-card {% if plan.highlighted %}pricing-highlighted{% endif %} reveal" style="position:relative;">
           {% if plan.highlighted %}
           <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);">
-            <span style="background:#E8591A;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:100px;">Best Value</span>
+            <span style="background:#C94A0F;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:100px;">Best Value</span>
           </div>
           {% endif %}
           <div>
@@ -405,7 +407,7 @@
             <ul style="list-style:none;border-top:1px solid #E5E0D5;padding-top:1.25rem;margin-bottom:2rem;display:flex;flex-direction:column;gap:.75rem;">
               {% for feature in plan.features %}
               <li style="display:flex;align-items:flex-start;gap:.65rem;font-size:.8rem;color:#5A5550;">
-                <span style="color:#E8591A;flex-shrink:0;margin-top:1px;">✓</span>
+                <span style="color:#B34700;flex-shrink:0;margin-top:1px;">✓</span>
                 <span>{{ feature }}</span>
               </li>
               {% endfor %}
@@ -421,7 +423,7 @@
       </div>
 
       <p style="text-align:center;font-size:.8rem;color:#8A8480;margin-top:2rem;">
-        Have enterprise goals? <a href="#contact" style="color:#E8591A;font-weight:600;text-decoration:none;">Describe your requirements for a custom quote →</a>
+        Have enterprise goals? <a href="#contact" style="color:#B34700;font-weight:600;text-decoration:none;">Describe your requirements for a custom quote →</a>
       </p>
     </div>
   </section>
@@ -444,7 +446,7 @@
               <div class="contact-card-icon">📧</div>
               <div>
                 <div style="font-weight:600;font-size:.85rem;color:#1A1A1A;margin-bottom:.25rem;">Email</div>
-                <a href="mailto:{{ owner_email }}" style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#E8591A;text-decoration:none;">{{ owner_email }}</a>
+                <a href="mailto:{{ owner_email }}" style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#B34700;text-decoration:none;">{{ owner_email }}</a>
                 <div style="font-size:.7rem;color:#8A8480;margin-top:.25rem;">Checked round-the-clock</div>
               </div>
             </div>
@@ -453,7 +455,7 @@
               <div>
                 <div style="font-weight:600;font-size:.85rem;color:#1A1A1A;margin-bottom:.25rem;">WhatsApp</div>
                 <a href="https://wa.me/{{ whatsapp|replace('+', '') }}" target="_blank" rel="noopener"
-                   style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#E8591A;text-decoration:none;">{{ whatsapp }}</a>
+                   style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#B34700;text-decoration:none;">{{ whatsapp }}</a>
                 <div style="font-size:.7rem;color:#8A8480;margin-top:.25rem;">Quick queries welcome</div>
               </div>
             </div>
@@ -462,14 +464,14 @@
               <div>
                 <div style="font-weight:600;font-size:.85rem;color:#1A1A1A;margin-bottom:.25rem;">X / Twitter</div>
                 <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener"
-                   style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#E8591A;text-decoration:none;">@Arvinefelix</a>
+                   style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#B34700;text-decoration:none;">@Arvinefelix</a>
               </div>
             </div>
           </div>
 
           <!-- Process -->
           <div style="background:#EDE8DE;border:1px solid #D8D2C5;border-radius:8px;padding:1.5rem;">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:#E8591A;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;">How it works</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:#B34700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;">How it works</div>
             <div class="process-step">
               <span class="step-num">01/</span>
               <span style="font-size:.8rem;color:#5A5550;line-height:1.55;">Tell me what you need using the form</span>
@@ -561,6 +563,7 @@
   <!-- Responsive styles -->
   <style>
     @keyframes spin { to { transform: rotate(360deg); } }
+
     @media (max-width: 768px) {
       .desktop-nav { display: none !important; }
       .mobile-toggle { display: block !important; }
