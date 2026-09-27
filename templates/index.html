@@ -30,7 +30,12 @@
   <!-- Fonts: Fraunces (editorial serif) + Inter (clean body) + JetBrains Mono (code) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+  </noscript>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 
@@ -101,6 +106,8 @@
     </div>
   </nav>
 
+  <main>
+
   <!-- ── HERO ─────────────────────────────────────────────────────────────── -->
   <header id="hero" style="padding:9rem 1.5rem 5rem;background:#F7F4EE;">
     <div style="max-width:860px;margin:0 auto;text-align:center;">
@@ -116,7 +123,7 @@
         Get a website that&nbsp;<em style="font-style:italic;color:#E8591A;">actually works.</em>
       </h1>
 
-      <p style="font-size:1.1rem;color:#6B6B6B;line-height:1.7;max-width:52ch;margin:0 auto 2.5rem;">
+      <p style="font-size:1.1rem;color:#585858;line-height:1.7;max-width:52ch;margin:0 auto 2.5rem;">
         I build fast, professional websites and custom business systems — with M-Pesa payments and Google visibility built in from day one. No generic templates, no cutting corners.
       </p>
 
@@ -211,7 +218,7 @@
         <div class="feature-card reveal">
           <div class="feature-icon">{{ s.icon }}</div>
           <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:1.05rem;color:#1A1A1A;margin-bottom:.65rem;">{{ s.title }}</h3>
-          <p style="font-size:.875rem;color:#6B6B6B;line-height:1.65;margin-bottom:1.25rem;">{{ s.desc }}</p>
+          <p style="font-size:.875rem;color:#585858;line-height:1.65;margin-bottom:1.25rem;">{{ s.desc }}</p>
           <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
             {% for tag in s.tags %}
             <span class="tag">{{ tag }}</span>
@@ -266,7 +273,7 @@
           <div>
           {% endif %}
             <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:1.05rem;color:#1A1A1A;margin-bottom:.65rem;">{{ project.title }}</h3>
-            <p style="font-size:.875rem;color:#6B6B6B;line-height:1.65;margin-bottom:1.25rem;">{{ project.description }}</p>
+            <p style="font-size:.875rem;color:#585858;line-height:1.65;margin-bottom:1.25rem;">{{ project.description }}</p>
             <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;">
               {% for tag in project.tags %}
               <span class="tag">{{ tag }}</span>
@@ -275,7 +282,7 @@
           </div>
           <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
             {% if project.url %}
-            <a href="{{ project.url }}" target="_blank" rel="noopener" class="btn-primary" style="font-size:.8rem;padding:.55rem 1.1rem;">View Live →</a>
+            <a href="{{ project.url }}" target="_blank" rel="noopener" class="btn-primary" style="font-size:.8rem;padding:.55rem 1.1rem;" aria-label="View {{ project.title }} live">View Live →</a>
             {% endif %}
             {% if project.github %}
             <a href="{{ project.github }}" target="_blank" rel="noopener" class="btn-outline" style="font-size:.8rem;padding:.55rem 1.1rem;">GitHub</a>
@@ -297,13 +304,13 @@
           I build it properly,<br/>
           <em style="font-style:italic;color:#E8591A;">the first time.</em>
         </h2>
-        <p style="font-size:.9375rem;color:#6B6B6B;line-height:1.75;margin-bottom:1rem;">
+        <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:1rem;">
           I'm Arvine Felix — a self-taught full-stack developer based in Nairobi, Kenya. I build websites and custom software for businesses, from small shops to multi-branch hospitals.
         </p>
-        <p style="font-size:.9375rem;color:#6B6B6B;line-height:1.75;margin-bottom:1rem;">
+        <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:1rem;">
           I don't hand over a site and disappear. I build it around what your business actually needs, wire up payments so money moves without friction, and make sure people searching for you online can actually find you.
         </p>
-        <p style="font-size:.9375rem;color:#6B6B6B;line-height:1.75;margin-bottom:2rem;">
+        <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:2rem;">
           If you need something built that works from day one and keeps working — let's talk.
         </p>
 
@@ -394,7 +401,7 @@
               <span class="pricing-price {% if plan.highlighted %}accent{% endif %}">{{ plan.price }}</span>
               <span style="font-size:.8rem;color:#8A8480;margin-bottom:.35rem;">/ {{ plan.period }}</span>
             </div>
-            <p style="font-size:.8rem;color:#6B6B6B;line-height:1.6;margin-bottom:1.5rem;">{{ plan.description }}</p>
+            <p style="font-size:.8rem;color:#585858;line-height:1.6;margin-bottom:1.5rem;">{{ plan.description }}</p>
             <ul style="list-style:none;border-top:1px solid #E5E0D5;padding-top:1.25rem;margin-bottom:2rem;display:flex;flex-direction:column;gap:.75rem;">
               {% for feature in plan.features %}
               <li style="display:flex;align-items:flex-start;gap:.65rem;font-size:.8rem;color:#5A5550;">
@@ -529,6 +536,8 @@
     </div>
   </section>
 
+  </main>
+
   <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
   <footer style="padding:2.5rem 1.5rem;">
     <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.5rem;">
@@ -539,9 +548,9 @@
       </div>
       <div style="font-size:.75rem;color:#8A8480;">© 2026 Arvine Felix</div>
       <div style="display:flex;gap:1.5rem;">
-        <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener" style="font-size:.8rem;color:#6B6B6B;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#E8591A'" onmouseout="this.style.color='#6B6B6B'">X</a>
-        <a href="https://linkedin.com/in/arvinefelix" target="_blank" rel="noopener" style="font-size:.8rem;color:#6B6B6B;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#E8591A'" onmouseout="this.style.color='#6B6B6B'">LinkedIn</a>
-        <a href="https://arvalblognews.online" target="_blank" rel="noopener" style="font-size:.8rem;color:#6B6B6B;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#E8591A'" onmouseout="this.style.color='#6B6B6B'">Arval Blog</a>
+        <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener" style="font-size:.8rem;color:#585858;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#E8591A'" onmouseout="this.style.color='#585858'">X</a>
+        <a href="https://linkedin.com/in/arvinefelix" target="_blank" rel="noopener" style="font-size:.8rem;color:#585858;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#E8591A'" onmouseout="this.style.color='#585858'">LinkedIn</a>
+        <a href="https://arvalblognews.online" target="_blank" rel="noopener" style="font-size:.8rem;color:#585858;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#E8591A'" onmouseout="this.style.color='#585858'">Arval Blog</a>
       </div>
     </div>
   </footer>
@@ -566,6 +575,7 @@
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
+
 
 
 
