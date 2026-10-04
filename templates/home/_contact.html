@@ -1,0 +1,109 @@
+  <!-- ── CONTACT ───────────────────────────────────────────────────────────── -->
+  <section id="contact" style="padding:5rem 1.5rem;background:#EFECE5;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:3rem;">
+        <span class="eyebrow" style="display:block;margin-bottom:.75rem;">Get In Touch</span>
+        <h2 class="section-title">Let's build<br/>something great.</h2>
+        <p class="section-sub" style="margin:1rem auto 0;">Tell me what you're looking for. I'll reply with a clear plan and price within 24 hours.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;">
+
+        <!-- Left: contact info + process -->
+        <div>
+          <div style="display:flex;flex-direction:column;gap:.85rem;margin-bottom:2rem;">
+            <div class="contact-card">
+              <div class="contact-card-icon">📧</div>
+              <div>
+                <div style="font-weight:600;font-size:.85rem;color:#1A1A1A;margin-bottom:.25rem;">Email</div>
+                <a href="mailto:{{ owner_email }}" style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#B34700;text-decoration:none;">{{ owner_email }}</a>
+                <div style="font-size:.7rem;color:#8A8480;margin-top:.25rem;">Checked round-the-clock</div>
+              </div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-card-icon">💬</div>
+              <div>
+                <div style="font-weight:600;font-size:.85rem;color:#1A1A1A;margin-bottom:.25rem;">WhatsApp</div>
+                <a href="https://wa.me/{{ whatsapp|replace('+', '') }}" target="_blank" rel="noopener"
+                   style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#B34700;text-decoration:none;">{{ whatsapp }}</a>
+                <div style="font-size:.7rem;color:#8A8480;margin-top:.25rem;">Quick queries welcome</div>
+              </div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-card-icon">🐦</div>
+              <div>
+                <div style="font-weight:600;font-size:.85rem;color:#1A1A1A;margin-bottom:.25rem;">X / Twitter</div>
+                <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener"
+                   style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#B34700;text-decoration:none;">@Arvinefelix</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Process -->
+          <div style="background:#EDE8DE;border:1px solid #D8D2C5;border-radius:8px;padding:1.5rem;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:#B34700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;">How it works</div>
+            <div class="process-step">
+              <span class="step-num">01/</span>
+              <span style="font-size:.8rem;color:#5A5550;line-height:1.55;">Tell me what you need using the form</span>
+            </div>
+            <div class="process-step">
+              <span class="step-num">02/</span>
+              <span style="font-size:.8rem;color:#5A5550;line-height:1.55;">Get a clear price and timeline within 24 hours</span>
+            </div>
+            <div class="process-step">
+              <span class="step-num">03/</span>
+              <span style="font-size:.8rem;color:#5A5550;line-height:1.55;">I build it, and keep you updated along the way</span>
+            </div>
+            <div class="process-step">
+              <span class="step-num">04/</span>
+              <span style="font-size:.8rem;color:#5A5550;line-height:1.55;">Your site or system goes live</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: form -->
+        <div style="background:#FAF8F4;border:1px solid #E5E0D5;border-radius:10px;padding:2.5rem;">
+          <div id="formAlert" style="display:none;margin-bottom:1.25rem;"></div>
+
+          <div style="display:flex;flex-direction:column;gap:1.1rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;">
+              <div>
+                <label class="form-label">Name *</label>
+                <input type="text" id="fname" class="form-input" placeholder="Your name" />
+              </div>
+              <div>
+                <label class="form-label">Email *</label>
+                <input type="email" id="femail" class="form-input" placeholder="you@company.com" />
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label">Project Type</label>
+              <input type="text" id="fsubject" class="form-input" placeholder="e.g. New business website, or a custom system" />
+            </div>
+
+            <div>
+              <label class="form-label">Details *</label>
+              <textarea id="fmessage" rows="5" class="form-input" style="resize:none;"
+                        placeholder="Tell me what you need, roughly when you need it, and any budget in mind..."></textarea>
+            </div>
+
+            <button id="submitBtn" onclick="submitContact()"
+                    class="btn-primary" style="width:100%;padding:1rem;font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:.75rem;">
+              <span id="btnText">Send Project Brief</span>
+              <span id="btnSpinner" style="display:none;">
+                <svg style="animation:spin 1s linear infinite;width:18px;height:18px;" fill="none" viewBox="0 0 24 24">
+                  <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/>
+                </svg>
+              </span>
+            </button>
+
+            <p style="text-align:center;font-size:.7rem;color:#8A8480;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;">
+              No obligation · 24h SLA response guaranteed
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Admin Dashboard — Arvine Felix</title>
+  <title>Orders — Arvine Felix</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
@@ -64,6 +64,21 @@
       .form-full{grid-column:auto}
       .project-row{flex-direction:column}
     }
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-bottom:1.75rem}
+    .stat{background:#fff;border:1px solid #E5E0D5;border-radius:10px;padding:1rem 1.15rem}
+    .stat b{display:block;font-size:1.35rem;font-weight:700}
+    .stat span{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace}
+    .table-wrap{background:#fff;border:1px solid #E5E0D5;border-radius:10px;overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:.8rem}
+    th{text-align:left;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;padding:.8rem 1rem;border-bottom:1px solid #F0EDE6;white-space:nowrap}
+    td{padding:.8rem 1rem;border-bottom:1px solid #F7F4EE;vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    .st{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:100px;white-space:nowrap}
+    .st-paid{background:#EAF6EE;color:#2D7A45;border:1px solid #A3D9B1}
+    .st-pending{background:#FFF6E0;color:#9A6A00;border:1px solid #F0D58A}
+    .st-failed{background:#FEF0ED;color:#C23F1A;border:1px solid #F5B8A6}
+    .st-review{background:#EDEBFA;color:#4B3FA8;border:1px solid #C5BEF0}
+    .muted{color:#8A8480;font-size:.72rem}
   </style>
 </head>
 <body>
@@ -71,101 +86,46 @@
 <nav>
   <div class="nav-brand">Arvine Felix · <span>Admin</span></div>
   <div class="nav-links">
-    <a href="/admin" class="active">Projects</a>
+    <a href="/admin">Projects</a>
     <a href="/admin/analytics">Analytics</a>
+    <a href="/admin/orders" class="active">Orders</a>
     <a href="/" target="_blank">View Site</a>
     <a href="/admin/logout">Logout</a>
   </div>
 </nav>
 
-<div class="wrap">
-  <h1>Projects</h1>
-  <p class="page-sub">Add, edit, or remove portfolio projects. Changes appear on the site instantly.</p>
+<div class="wrap" style="max-width:1100px">
+  <h1>Orders</h1>
+  <p class="page-sub">Payments started from the Book Now buttons. Status updates automatically when IntaSend confirms.</p>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat, msg in messages %}
-    <div class="flash {{ cat }}">{{ msg }}</div>
-    {% endfor %}
-  {% endwith %}
-
-  <!-- ── ADD PROJECT FORM ── -->
-  <div class="add-card">
-    <h2>Add New Project</h2>
-    <form method="POST" action="/admin/projects/add">
-      <div class="form-grid">
-        <div class="form-full">
-          <label>Title *</label>
-          <input type="text" name="title" placeholder="e.g. CVForge AI" required/>
-        </div>
-        <div class="form-full">
-          <label>Description *</label>
-          <textarea name="description" placeholder="What does this project do? What stack does it use?"></textarea>
-        </div>
-        <div class="form-full">
-          <label>Tags (comma-separated)</label>
-          <input type="text" name="tags" placeholder="Flask, M-Pesa, Gemini AI, PostgreSQL"/>
-        </div>
-        <div>
-          <label>Live URL</label>
-          <input type="text" name="url" placeholder="https://example.com or #"/>
-        </div>
-        <div>
-          <label>GitHub URL</label>
-          <input type="text" name="github" placeholder="https://github.com/arvineee/..."/>
-        </div>
-        <div>
-          <label>Sort Order</label>
-          <input type="number" name="sort_order" value="0" min="0"/>
-        </div>
-        <div style="display:flex;align-items:flex-end;padding-bottom:.1rem">
-          <div class="check-row">
-            <input type="checkbox" name="featured" id="add_featured"/>
-            <span>Mark as Featured</span>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:1.25rem">
-        <button type="submit" class="btn btn-primary">Add Project</button>
-      </div>
-    </form>
+  <div class="stats">
+    <div class="stat"><b>KES {{ '{:,}'.format(totals.revenue) }}</b><span>Collected</span></div>
+    <div class="stat"><b>{{ totals.paid }}</b><span>Paid</span></div>
+    <div class="stat"><b>{{ totals.pending }}</b><span>Pending</span></div>
+    <div class="stat"><b>{{ totals.failed }}</b><span>Failed</span></div>
   </div>
 
-  <!-- ── PROJECT LIST ── -->
-  <div class="section-title">All Projects ({{ projects|length }})</div>
-
-  {% if projects %}
-  <div class="project-list">
-    {% for p in projects %}
-    <div class="project-row">
-      <div class="project-info">
-        <div class="project-title">
-          {{ p.title }}
-          {% if p.featured %}<span class="badge">Featured</span>{% endif %}
-          <span class="sort-badge">#{{ p.sort_order }}</span>
-        </div>
-        <div class="project-desc">{{ p.description }}</div>
-        <div class="tag-list">
-          {% for tag in p.tags %}
-          <span class="tag">{{ tag }}</span>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="project-actions">
-        <a href="/admin/projects/{{ p.id }}/edit" class="btn btn-outline btn-sm">Edit</a>
-        <form method="POST" action="/admin/projects/{{ p.id }}/delete"
-              onsubmit="return confirm('Delete \'{{ p.title }}\'? This cannot be undone.')">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-        </form>
-      </div>
-    </div>
-    {% endfor %}
+  {% if orders %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Ref</th><th>When (UTC)</th><th>Customer</th><th>Plan</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td><code>{{ o.ref }}</code>{% if o.invoice_id %}<div class="muted">{{ o.invoice_id }}</div>{% endif %}</td>
+          <td class="muted">{{ o.created_at }}</td>
+          <td><strong>{{ o.customer_name }}</strong><div class="muted">{{ o.email }}<br/>{{ o.phone }}</div></td>
+          <td>{{ o.plan_name }}{% if o.offer_title %}<div class="muted">{{ o.offer_title }}</div>{% endif %}</td>
+          <td>KES {{ '{:,}'.format(o.amount) }}{% if o.amount != o.list_price %}<div class="muted">list {{ '{:,}'.format(o.list_price) }}</div>{% endif %}</td>
+          <td><span class="st st-{{ o.status }}">{{ o.status }}</span>{% if o.failure_reason %}<div class="muted">{{ o.failure_reason }}</div>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
   {% else %}
-  <div class="empty">No projects yet. Add your first one above.</div>
+  <div class="empty">No orders yet. They will appear here once someone clicks Book Now.</div>
   {% endif %}
 </div>
-
 </body>
 </html>
-
-

@@ -1,0 +1,3 @@
+Flask>=3.0
+Flask-Mail>=0.10
+intasend-python>=1.0

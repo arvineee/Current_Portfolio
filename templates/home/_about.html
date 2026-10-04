@@ -1,0 +1,83 @@
+  <!-- ── ABOUT ─────────────────────────────────────────────────────────────── -->
+  <section id="about" style="padding:5rem 1.5rem;background:#F7F4EE;">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+
+      <div class="reveal">
+        <span class="eyebrow" style="display:block;margin-bottom:.75rem;">About Me</span>
+        <h2 class="section-title" style="margin-bottom:1.5rem;">
+          I build it properly,<br/>
+          <em style="font-style:italic;color:#B34700;">the first time.</em>
+        </h2>
+        <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:1rem;">
+          I'm Arvine Felix — a self-taught full-stack web developer based in Nairobi, Kenya. I build websites, web apps and custom software for Kenyan businesses, from small shops, schools and churches to multi-branch hospitals.
+        </p>
+        <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:1rem;">
+          I don't hand over a site and disappear. I build it around what your business actually needs, wire up payments so money moves without friction, and make sure people searching for you online can actually find you.
+        </p>
+        <p style="font-size:.9375rem;color:#585858;line-height:1.75;margin-bottom:2rem;">
+          If you need something built that works from day one and keeps working — let's talk.
+        </p>
+
+        <div class="stack-grid" style="margin-bottom:1.5rem;">
+          {% set stack = ['Python / Flask', 'SQLAlchemy / Alembic', 'Tailwind CSS', 'HTMX / Alpine.js', 'M-Pesa Daraja API', 'Gemini AI Core', 'MySQL / PostgreSQL', 'PythonAnywhere / Nginx'] %}
+          {% for item in stack %}
+          <div class="stack-item"><span class="stack-dot"></span>{{ item }}</div>
+          {% endfor %}
+        </div>
+
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+          <a href="https://x.com/Arvinefelix" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#B34700;text-decoration:none;">X / @Arvinefelix</a>
+          <a href="https://linkedin.com/in/arvinefelix" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#B34700;text-decoration:none;">LinkedIn</a>
+          <a href="https://arvalblognews.online" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#B34700;text-decoration:none;">Arval Blog News</a>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <!-- Code block -->
+        <div class="code-block" style="margin-bottom:1.25rem;">
+          <div class="terminal-dots" style="margin-bottom:1rem;">
+            <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+            <span style="margin-left:.75rem;font-size:.7rem;color:#6B6B80;">developer_manifest.py</span>
+          </div>
+<span class="kw">class</span> <span class="cl">ArvineFelix</span>:
+    identity   = <span class="str">"Full-Stack Engineer & SEO Architect"</span>
+    location   = <span class="str">"Nairobi, Kenya 🇰🇪"</span>
+    capability = <span class="str">"Global SaaS Deployment"</span>
+
+    metrics = [
+        <span class="str">"Async multi-tenant execution"</span>,
+        <span class="str">"Zero template overhead"</span>,
+        <span class="str">"Automated IndexNow configs"</span>,
+        <span class="str">"Uncompromised post-launch support"</span>,
+    ]
+
+    <span class="kw">def</span> <span class="cl">deliver</span>(self):
+        <span class="kw">return</span> {
+            <span class="str">"latency"</span>: <span class="str">"Sub-2s performance"</span>,
+            <span class="str">"code"</span>:    <span class="str">"Clean Python modules"</span>,
+            <span class="str">"index"</span>:  <span class="str">"Immediate search structures"</span>,
+        }
+        </div>
+
+        <!-- Mini stat cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div class="mini-stat">
+            <div class="mini-stat-val">On Time</div>
+            <div class="mini-stat-label">Clear timeline, no surprises</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-val">Clean Code</div>
+            <div class="mini-stat-label">Easy to maintain and extend later</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-val">Fixed Price</div>
+            <div class="mini-stat-label">No hidden costs, agreed upfront</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-val">Built to Grow</div>
+            <div class="mini-stat-label">Ready to scale as your business does</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% block head_meta %}{% endblock %}
+
+  <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='AF.jpg') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='AF.jpg') }}" />
+
+  <!-- Fonts: Fraunces (editorial serif) + Inter (clean body) + JetBrains Mono (code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+  </noscript>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  {% if schema %}<script type="application/ld+json">{{ schema|tojson }}</script>{% endif %}
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  {% block navbar %}{% endblock %}
+  {% block content %}{% endblock %}
+  {% block footer %}{% endblock %}
+
+  <!-- WhatsApp FAB -->
+  <a href="https://wa.me/{{ whatsapp|replace('+','') }}" target="_blank" rel="noopener" aria-label="WhatsApp" class="whatsapp-fab">💬</a>
+
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

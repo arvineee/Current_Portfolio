@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% extends "base.html" %}
 
+{% block head_meta %}
   <title>Contact a Web Developer in Nairobi — Free Website Quote | Arval</title>
   <meta name="description" content="Tell me what you need and get a clear price and timeline within 24 hours. Websites, web apps and M-Pesa business systems for Kenyan businesses." />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <meta name="theme-color" content="#F7F4EE" />
   <link rel="canonical" href="{{ site_url }}/contact" />
   <link rel="alternate" hreflang="en-KE" href="{{ site_url }}/contact" />
-
   <meta property="og:title" content="Contact a Web Developer in Nairobi — Free Website Quote" />
   <meta property="og:description" content="Tell me what you need and get a clear price and timeline within 24 hours." />
   <meta property="og:type" content="website" />
@@ -23,20 +19,19 @@
   <meta name="twitter:site" content="@Arvinefelix" />
   <meta name="twitter:title" content="Contact a Web Developer in Nairobi — Free Website Quote" />
   <meta name="twitter:image" content="{{ site_url }}/static/AF.jpg" />
+{% endblock %}
 
-  <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='AF.jpg') }}" />
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='AF.jpg') }}" />
+{% block head_extra %}
+  <style>
+    @media (max-width: 768px) {
+      section > div > div[style*="grid-template-columns:1fr 1.2fr"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+{% endblock %}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-
-  <script type="application/ld+json">{{ schema|tojson }}</script>
-</head>
-<body>
-
+{% block navbar %}
   <!-- ── NAVBAR ───────────────────────────────────────────────────────────── -->
   <nav id="navbar" style="position:fixed;top:0;left:0;right:0;z-index:50;background:#F7F4EE;border-bottom:1px solid #E5E0D5;">
     <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;">
@@ -47,7 +42,9 @@
       <a href="/" style="font-size:.85rem;color:#6B6B6B;text-decoration:none;">← Back to site</a>
     </div>
   </nav>
+{% endblock %}
 
+{% block content %}
   <!-- ── HERO + FORM ──────────────────────────────────────────────────────── -->
   <section style="padding:8rem 1.5rem 4rem;background:#F7F4EE;">
     <div style="max-width:1100px;margin:0 auto;">
@@ -152,7 +149,9 @@
       </div>
     </div>
   </section>
+{% endblock %}
 
+{% block footer %}
   <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
   <footer style="padding:2.5rem 1.5rem;background:#F7F4EE;border-top:1px solid #E5E0D5;">
     <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.5rem;">
@@ -164,75 +163,8 @@
       <div style="font-size:.75rem;color:#8A8480;">© 2026 Arval Web Solutions</div>
     </div>
   </footer>
+{% endblock %}
 
-  <!-- WhatsApp FAB -->
-  <a href="https://wa.me/{{ whatsapp|replace('+','') }}" target="_blank" rel="noopener" aria-label="WhatsApp" class="whatsapp-fab">💬</a>
-
-  <style>
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 768px) {
-      section > div > div[style*="grid-template-columns:1fr 1.2fr"] {
-        grid-template-columns: 1fr !important;
-      }
-    }
-  </style>
-
-  <script>
-    function submitContactForm() {
-      const name    = document.getElementById('fname').value.trim();
-      const email   = document.getElementById('femail').value.trim();
-      const subject = document.getElementById('fsubject').value.trim() || 'Contact Page Lead';
-      const message = document.getElementById('fmessage').value.trim();
-      const alertBox = document.getElementById('formAlert');
-      const btn = document.getElementById('submitBtn');
-      const btnText = document.getElementById('btnText');
-      const btnSpinner = document.getElementById('btnSpinner');
-
-      alertBox.style.display = 'none';
-
-      if (!name || !email || !message) {
-        alertBox.textContent = 'Please fill in your name, contact info, and details.';
-        alertBox.style.cssText = 'display:block;background:#FBEAEA;color:#B3261E;padding:.85rem 1rem;border-radius:6px;font-size:.85rem;margin-bottom:1.25rem;';
-        return;
-      }
-
-      btn.disabled = true;
-      btnText.style.display = 'none';
-      btnSpinner.style.display = 'inline-flex';
-
-      fetch('/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message })
-      })
-        .then(res => res.json())
-        .then(data => {
-          btn.disabled = false;
-          btnText.style.display = 'inline';
-          btnSpinner.style.display = 'none';
-
-          if (data.success) {
-            alertBox.textContent = data.message || 'Thanks! We will respond within 24 hours.';
-            alertBox.style.cssText = 'display:block;background:#E8F5E9;color:#1B5E20;padding:.85rem 1rem;border-radius:6px;font-size:.85rem;margin-bottom:1.25rem;';
-            document.getElementById('fname').value = '';
-            document.getElementById('femail').value = '';
-            document.getElementById('fsubject').value = '';
-            document.getElementById('fmessage').value = '';
-          } else {
-            alertBox.textContent = data.error || 'Something went wrong. Please try WhatsApp instead.';
-            alertBox.style.cssText = 'display:block;background:#FBEAEA;color:#B3261E;padding:.85rem 1rem;border-radius:6px;font-size:.85rem;margin-bottom:1.25rem;';
-          }
-        })
-        .catch(() => {
-          btn.disabled = false;
-          btnText.style.display = 'inline';
-          btnSpinner.style.display = 'none';
-          alertBox.textContent = 'Could not send. Please try WhatsApp instead.';
-          alertBox.style.cssText = 'display:block;background:#FBEAEA;color:#B3261E;padding:.85rem 1rem;border-radius:6px;font-size:.85rem;margin-bottom:1.25rem;';
-        });
-    }
-  </script>
-</body>
-</html>
-
-
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+{% endblock %}

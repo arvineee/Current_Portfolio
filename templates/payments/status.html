@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block head_meta %}
+  <title>Payment status — Arval Web Solutions</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#F7F4EE" />
+{% endblock %}
+
+{% block content %}
+  <section style="padding:9rem 1.5rem 5rem;background:#F7F4EE;min-height:90vh;">
+    <div style="max-width:520px;margin:0 auto;text-align:center;">
+      <div id="payStatus" data-initial="{{ order.status }}" data-url="{{ url_for('payments.status', ref=order.ref) }}">
+
+        <div data-state="pending" style="display:none;">
+          <svg style="animation:spin 1s linear infinite;width:40px;height:40px;color:#E8591A;margin-bottom:1rem;" fill="none" viewBox="0 0 24 24">
+            <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/>
+          </svg>
+          <h1 class="section-title" style="font-size:1.8rem;margin-bottom:.75rem;">Confirming your payment…</h1>
+          <p style="color:#585858;line-height:1.7;">If an M-Pesa prompt appears on your phone, enter your PIN. This page updates by itself.</p>
+          <p data-state-slow style="display:none;color:#8A8480;font-size:.85rem;margin-top:1rem;">Taking longer than usual. You don't need to wait here — you'll get an email as soon as the payment is confirmed.</p>
+        </div>
+
+        <div data-state="paid" style="display:none;">
+          <div style="font-size:3rem;margin-bottom:.5rem;">✅</div>
+          <h1 class="section-title" style="font-size:1.8rem;margin-bottom:.75rem;">Payment received — thank you!</h1>
+          <p style="color:#585858;line-height:1.7;">{{ order.plan_name }} · KES {{ '{:,}'.format(order.amount) }}<br/>Reference: <strong>{{ order.ref }}</strong></p>
+          <p style="color:#585858;line-height:1.7;margin-top:1rem;">I'll contact you within 24 hours to kick off your project. A receipt is on its way to {{ order.email }}.</p>
+          <a href="/" class="btn-outline" style="display:inline-block;margin-top:1.5rem;">Back to the site</a>
+        </div>
+
+        <div data-state="failed" style="display:none;">
+          <div style="font-size:3rem;margin-bottom:.5rem;">⚠️</div>
+          <h1 class="section-title" style="font-size:1.8rem;margin-bottom:.75rem;">Payment didn't go through</h1>
+          <p style="color:#585858;line-height:1.7;">You haven't been charged for this attempt. You can try again, or message me on WhatsApp and I'll help.</p>
+          <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;">
+            <a href="{{ url_for('payments.checkout', plan_index=order.plan_index) }}" class="btn-primary">Try again</a>
+            <a href="https://wa.me/{{ whatsapp|replace('+','') }}" target="_blank" rel="noopener" class="btn-outline">WhatsApp me</a>
+          </div>
+        </div>
+
+        <div data-state="review" style="display:none;">
+          <div style="font-size:3rem;margin-bottom:.5rem;">🔎</div>
+          <h1 class="section-title" style="font-size:1.8rem;margin-bottom:.75rem;">We received your payment</h1>
+          <p style="color:#585858;line-height:1.7;">There's a small difference to check, so I'm reviewing it by hand. I'll email you shortly. Reference: <strong>{{ order.ref }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/payment-status.js') }}"></script>
+{% endblock %}

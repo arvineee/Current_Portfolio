@@ -1,0 +1,66 @@
+  <!-- ── PRICING ───────────────────────────────────────────────────────────── -->
+  <section id="pricing" style="padding:5rem 1.5rem;background:#EFECE5;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:3rem;">
+        <span class="eyebrow" style="display:block;margin-bottom:.75rem;">Pricing</span>
+        <h2 class="section-title">Clear pricing.<br/>No surprises later.</h2>
+        <p class="section-sub" style="margin:1rem auto 0;">Pick what fits, or message me and we'll figure out the right one together.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;align-items:start;">
+        {% for plan in plans %}
+        <div class="pricing-card {% if plan.highlighted %}pricing-highlighted{% endif %} reveal" style="position:relative;">
+          {% if plan.highlighted %}
+          <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);">
+            <span style="background:#C94A0F;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:100px;">Best Value</span>
+          </div>
+          {% endif %}
+          <div>
+            <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;color:#1A1A1A;margin-bottom:1.25rem;">{{ plan.name }}</h3>
+            <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:.35rem;margin-bottom:.5rem;">
+              {% if plan.sale_price %}
+              <s style="font-size:1rem;color:#8A8480;margin-bottom:.4rem;">{{ plan.price }}</s>
+              <span class="pricing-price accent">{{ plan.sale_price }}</span>
+              {% else %}
+              <span class="pricing-price {% if plan.highlighted %}accent{% endif %}">{{ plan.price }}</span>
+              {% endif %}
+              <span style="font-size:.8rem;color:#8A8480;margin-bottom:.35rem;">/ {{ plan.period }}</span>
+            </div>
+            {% if plan.sale_price %}
+            <div style="display:inline-block;background:#FDE8DC;color:#B34700;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:.9rem;">
+              Save {{ plan.percent_off }}% · ends in <span class="offer-countdown" data-end="{{ offer.ends_at_iso }}">…</span>
+            </div>
+            {% endif %}
+            <p style="font-size:.8rem;color:#585858;line-height:1.6;margin-bottom:1.5rem;">{{ plan.description }}</p>
+            <ul style="list-style:none;border-top:1px solid #E5E0D5;padding-top:1.25rem;margin-bottom:2rem;display:flex;flex-direction:column;gap:.75rem;">
+              {% for feature in plan.features %}
+              <li style="display:flex;align-items:flex-start;gap:.65rem;font-size:.8rem;color:#5A5550;">
+                <span style="color:#B34700;flex-shrink:0;margin-top:1px;">✓</span>
+                <span>{{ feature }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% if plan.price_value %}
+          <a href="{{ url_for('payments.checkout', plan_index=loop.index0) if payments_enabled else '#contact' }}"
+             class="{% if plan.highlighted %}btn-primary{% else %}btn-outline{% endif %}"
+             style="display:block;text-align:center;width:100%;">
+            Book Now{% if plan.sale_price %} · {{ plan.sale_price }}{% endif %}
+          </a>
+          <a href="#contact" style="display:block;text-align:center;margin-top:.75rem;font-size:.78rem;color:#8A8480;text-decoration:none;">Questions first? {{ plan.cta }} →</a>
+          {% else %}
+          <a href="#contact"
+             class="{% if plan.highlighted %}btn-primary{% else %}btn-outline{% endif %}"
+             style="display:block;text-align:center;width:100%;">
+            {{ plan.cta }}
+          </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <p style="text-align:center;font-size:.8rem;color:#8A8480;margin-top:2rem;">
+        Have enterprise goals? <a href="#contact" style="color:#B34700;font-weight:600;text-decoration:none;">Describe your requirements for a custom quote →</a>
+      </p>
+    </div>
+  </section>

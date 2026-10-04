@@ -1,0 +1,69 @@
+  <!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+  <header id="hero" style="padding:9rem 1.5rem 5rem;background:#F7F4EE;">
+    <div style="max-width:860px;margin:0 auto;text-align:center;">
+
+      {% if offer %}
+      <div class="offer-banner" style="max-width:640px;margin:0 auto 1.5rem;background:#1A1A1A;color:#fff;border-radius:10px;padding:1rem 1.25rem;font-size:.9rem;line-height:1.5;">
+        🔥 <strong>{{ offer.title }}</strong>{% if offer.message %} — {{ offer.message }}{% endif %}
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#FFB37F;margin-top:.25rem;">Ends in <span class="offer-countdown" data-end="{{ offer.ends_at_iso }}">…</span></span>
+        <div style="display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:center;margin-top:.9rem;">
+          {% if featured_plan is not none %}
+          {% set fp = plans[featured_plan] %}
+          <a class="btn-book" href="{{ url_for('payments.checkout', plan_index=featured_plan) if payments_enabled else '#contact' }}">Book Now · {{ fp.sale_price }}</a>
+          {% endif %}
+          <a href="#pricing" style="color:#FFB37F;font-size:.82rem;text-decoration:none;">See all plans →</a>
+        </div>
+      </div>
+      {% endif %}
+      <!-- Eyebrow -->
+      <span class="eyebrow" style="display:block;margin-bottom:1.25rem;">
+        Web Developer in Nairobi, Kenya · Booking new projects — 2 slots left this month
+      </span>
+
+      <!-- Headline -->
+      <h1 class="section-title" style="margin-bottom:1.5rem;font-size:clamp(2.6rem,6.5vw,4.4rem);">
+        Stop losing customers.<br />
+        Get a website that&nbsp;<em style="font-style:italic;color:#B34700;">actually works.</em>
+      </h1>
+
+      <p style="font-size:1.1rem;color:#585858;line-height:1.7;max-width:52ch;margin:0 auto 2.5rem;">
+        I'm Arvine Felix, a web developer in Nairobi, Kenya. I build fast, professional websites, web apps and custom business systems — including hospital and clinic management systems — with M-Pesa payments and Google visibility built in from day one. No generic templates, no cutting corners.
+      </p>
+
+      <!-- Terminal typewriter -->
+      <div class="terminal-block" style="max-width:520px;margin:0 auto 2.5rem;">
+        <div class="terminal-dots">
+          <span class="dot-red"></span>
+          <span class="dot-yellow"></span>
+          <span class="dot-green"></span>
+        </div>
+        <span style="color:#8888A0;">$ arval web solutions --optimize </span>
+        <span class="typewriter-accent" id="typewriter"></span><span class="cursor-blink">|</span>
+      </div>
+
+      <!-- CTA row -->
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:1rem;">
+        <a href="#projects" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-outline">Start a Project →</a>
+        <a href="https://wa.me/{{ whatsapp|replace('+', '') }}" target="_blank" rel="noopener"
+           style="display:inline-flex;align-items:center;gap:.5rem;background:#25D366;color:#fff;padding:.75rem 1.5rem;border-radius:6px;font-weight:600;font-size:.875rem;text-decoration:none;transition:background .2s;"
+           onmouseover="this.style.background='#1ebe5a'" onmouseout="this.style.background='#25D366'">💬 WhatsApp</a>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="stat-strip" style="max-width:480px;margin:0 auto;">
+        <div class="stat-item">
+          <span class="stat-number">3+</span>
+          <span class="stat-label">Years Building Software</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">&lt;24h</span>
+          <span class="stat-label">Reply Time, Guaranteed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">On-Time Delivery</span>
+        </div>
+      </div>
+    </div>
+  </header>
