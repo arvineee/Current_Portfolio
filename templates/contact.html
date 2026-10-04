@@ -4,16 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Contact Arval Web Solutions — Get a Free Website Quote</title>
-  <meta name="description" content="Tell us what you need and get a clear price and timeline within 24 hours. Websites, online stores, and custom business systems for Kenyan businesses." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://arvineportfolio.pythonanywhere.com/contact" />
+  <title>Contact a Web Developer in Nairobi — Free Website Quote | Arval</title>
+  <meta name="description" content="Tell me what you need and get a clear price and timeline within 24 hours. Websites, web apps and M-Pesa business systems for Kenyan businesses." />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <meta name="theme-color" content="#F7F4EE" />
+  <link rel="canonical" href="{{ site_url }}/contact" />
+  <link rel="alternate" hreflang="en-KE" href="{{ site_url }}/contact" />
 
-  <meta property="og:title" content="Contact Arval Web Solutions — Get a Free Website Quote" />
-  <meta property="og:description" content="Tell us what you need and get a clear price and timeline within 24 hours." />
+  <meta property="og:title" content="Contact a Web Developer in Nairobi — Free Website Quote" />
+  <meta property="og:description" content="Tell me what you need and get a clear price and timeline within 24 hours." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://arvineportfolio.pythonanywhere.com/contact" />
-  <meta property="og:image" content="{{ url_for('static', filename='AF.jpg', _external=True) }}" />
+  <meta property="og:url" content="{{ site_url }}/contact" />
+  <meta property="og:image" content="{{ site_url }}/static/AF.jpg" />
+  <meta property="og:image:alt" content="Arvine Felix — web developer in Nairobi, Kenya" />
+  <meta property="og:site_name" content="Arval Web Solutions" />
+  <meta property="og:locale" content="en_KE" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@Arvinefelix" />
+  <meta name="twitter:title" content="Contact a Web Developer in Nairobi — Free Website Quote" />
+  <meta name="twitter:image" content="{{ site_url }}/static/AF.jpg" />
 
   <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='AF.jpg') }}" />
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='AF.jpg') }}" />
@@ -24,14 +33,7 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Contact Arval Web Solutions",
-    "url": "https://arvineportfolio.pythonanywhere.com/contact"
-  }
-  </script>
+  <script type="application/ld+json">{{ schema|tojson }}</script>
 </head>
 <body>
 
@@ -232,4 +234,5 @@
   </script>
 </body>
 </html>
+
 

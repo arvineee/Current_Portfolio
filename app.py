@@ -3,6 +3,7 @@ from flask_mail import Mail, Message
 from functools import wraps
 import config
 import db as database
+import seo
 
 app = Flask(__name__)
 
@@ -38,6 +39,12 @@ def set_security_headers(response):
     response.headers['X-Frame-Options']            = 'DENY'
     response.headers['X-Content-Type-Options']     = 'nosniff'
     response.headers['Referrer-Policy']            = 'strict-origin-when-cross-origin'
+    # Keep the admin area out of search results even if a link leaks.
+    if request.path.startswith('/admin'):
+        response.headers['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
+    # Let search engines cache static assets / feeds sensibly.
+    if request.path in ('/sitemap.xml', '/robots.txt', '/llms.txt'):
+        response.headers['Cache-Control'] = 'public, max-age=3600'
     return response
 
 
@@ -152,6 +159,10 @@ def index():
     return render_template('index.html',
                            projects=projects,
                            plans=config.PLANS,
+                           services=config.SERVICES,
+                           faqs=config.FAQS,
+                           schema=seo.build_home_schema(),
+                           site_url=config.SITE_URL,
                            whatsapp=config.WHATSAPP_NUMBER,
                            phone=config.PHONE_NUMBER,
                            owner_email=config.OWNER_EMAIL)
@@ -162,6 +173,8 @@ def contact():
     if request.method == 'GET':
         track_visit()
         return render_template('contact.html',
+                               schema=seo.build_contact_schema(),
+                               site_url=config.SITE_URL,
                                whatsapp=config.WHATSAPP_NUMBER,
                                phone=config.PHONE_NUMBER,
                                owner_email=config.OWNER_EMAIL)
@@ -213,34 +226,46 @@ def verify():
 
 @app.route('/robots.txt')
 def robots():
+    # One group for everyone (search engines AND AI crawlers such as GPTBot, ClaudeBot,
+    # PerplexityBot, Google-Extended): public pages are open, admin is closed.
     lines = [
         "User-agent: *",
         "Allow: /",
         "Disallow: /admin",
-        "Disallow: /admin/",
-        f"Sitemap: {request.url_root.rstrip('/')}/sitemap.xml",
+        "",
+        f"Sitemap: {config.SITE_URL}/sitemap.xml",
     ]
-    return app.response_class("\n".join(lines), mimetype='text/plain')
+    return app.response_class("\n".join(lines) + "\n", mimetype='text/plain')
 
 
 @app.route('/sitemap.xml')
 def sitemap():
-    from datetime import date
-    base = request.url_root.rstrip('/')
-    today = date.today().isoformat()
+    base = config.SITE_URL
+    lastmod = config.CONTENT_LAST_MODIFIED
     urls = [
-        {'loc': f'{base}/', 'changefreq': 'weekly', 'priority': '1.0'},
+        {'loc': f'{base}/', 'changefreq': 'weekly', 'priority': '1.0',
+         'image': f'{base}/static/AF.jpg'},
         {'loc': f'{base}/contact', 'changefreq': 'monthly', 'priority': '0.8'},
     ]
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
-           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+           'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
     for u in urls:
+        img = (f"<image:image><image:loc>{u['image']}</image:loc></image:image>"
+               if u.get('image') else '')
         xml.append(
-            f"<url><loc>{u['loc']}</loc><lastmod>{today}</lastmod>"
-            f"<changefreq>{u['changefreq']}</changefreq><priority>{u['priority']}</priority></url>"
+            f"<url><loc>{u['loc']}</loc><lastmod>{lastmod}</lastmod>"
+            f"<changefreq>{u['changefreq']}</changefreq><priority>{u['priority']}</priority>{img}</url>"
         )
     xml.append('</urlset>')
     return app.response_class("\n".join(xml), mimetype='application/xml')
+
+
+@app.route('/llms.txt')
+def llms_txt():
+    """Plain-text briefing for AI assistants / answer engines (the page already links to it)."""
+    return app.response_class(seo.build_llms_txt(), mimetype='text/plain; charset=utf-8')
+
 
 # ── ADMIN: LOGIN / LOGOUT ─────────────────────────────────────────────────────
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -331,6 +356,7 @@ def admin_analytics():
 
 if __name__ == '__main__':
     app.run(debug=False)
+
 
 
 
