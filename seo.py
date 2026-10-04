@@ -18,10 +18,10 @@ KNOWS_ABOUT = [
 ]
 
 
-def _offers():
+def _offers(plans, offer):
     offers = []
-    for plan in config.PLANS:
-        offer = {
+    for plan in plans:
+        offer_node = {
             '@type': 'Offer',
             'name': plan['name'],
             'description': plan['description'],
@@ -31,17 +31,21 @@ def _offers():
             'itemOffered': {'@type': 'Service', 'name': plan['name'], 'provider': {'@id': BUSINESS_ID}},
         }
         if plan.get('price_value'):
-            offer['priceSpecification'] = {
+            current = plan.get('sale_price_value') or plan['price_value']
+            offer_node['priceSpecification'] = {
                 '@type': 'PriceSpecification',
-                'minPrice': plan['price_value'],
+                'minPrice': current,
                 'priceCurrency': 'KES',
             }
-        offers.append(offer)
+            if plan.get('sale_price_value') and offer:
+                offer_node['priceValidUntil'] = offer['ends_at_date']
+        offers.append(offer_node)
     return offers
 
 
-def build_home_schema():
-    prices = [p['price_value'] for p in config.PLANS if p.get('price_value')]
+def build_home_schema(plans=None, offer=None):
+    plans = plans or config.PLANS
+    prices = [p.get('sale_price_value') or p['price_value'] for p in plans if p.get('price_value')]
     return {
         '@context': 'https://schema.org',
         '@graph': [
@@ -119,7 +123,7 @@ def build_home_schema():
                 'hasOfferCatalog': {
                     '@type': 'OfferCatalog',
                     'name': 'Web development services and pricing',
-                    'itemListElement': _offers(),
+                    'itemListElement': _offers(plans, offer),
                 },
                 'sameAs': config.SOCIAL_LINKS,
             },
@@ -162,7 +166,7 @@ def build_contact_schema():
     }
 
 
-def build_llms_txt():
+def build_llms_txt(plans=None, offer=None):
     """llms.txt — a plain-markdown briefing for AI assistants and answer engines."""
     L = []
     L.append(f'# {config.SITE_NAME}')
@@ -189,8 +193,14 @@ def build_llms_txt():
         L.append(f'- **{s["title"]}**: {s["desc"]}')
     L.append('')
     L.append('## Pricing (KES)')
-    for p in config.PLANS:
-        L.append(f'- **{p["name"]}** — {p["price"]} ({p["period"]}): {p["description"]}')
+    plans = plans or config.PLANS
+    if offer:
+        L.append(f'- **LIMITED OFFER: {offer["title"]}** — {offer.get("message", "")} Valid until {offer["ends_at_label"]}.')
+    for p in plans:
+        price = p['price']
+        if p.get('sale_price'):
+            price = f'{p["sale_price"]} (was {p["price"]}, {p["percent_off"]}% off)'
+        L.append(f'- **{p["name"]}** — {price} ({p["period"]}): {p["description"]}')
     L.append('')
     L.append('## Live work')
     for p in config.PROJECTS:
@@ -207,4 +217,3 @@ def build_llms_txt():
         L.append(f'- {link}')
     L.append(f'- [Sitemap]({SITE}/sitemap.xml)')
     return '\n'.join(L) + '\n'
-
