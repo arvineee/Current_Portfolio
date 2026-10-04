@@ -4,6 +4,7 @@ from functools import wraps
 import config
 import db as database
 import seo
+import offers
 
 app = Flask(__name__)
 
@@ -15,6 +16,9 @@ app.config['MAIL_USERNAME']       = config.MAIL_USERNAME
 app.config['MAIL_PASSWORD']       = config.MAIL_PASSWORD
 app.config['MAIL_DEFAULT_SENDER'] = config.MAIL_DEFAULT_SENDER
 app.config['SECRET_KEY']          = config.SECRET_KEY
+
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'   # basic CSRF protection for admin forms
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 mail = Mail(app)
 
@@ -43,7 +47,7 @@ def set_security_headers(response):
     if request.path.startswith('/admin'):
         response.headers['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
     # Let search engines cache static assets / feeds sensibly.
-    if request.path in ('/sitemap.xml', '/robots.txt', '/llms.txt'):
+    if request.path in ('/sitemap.xml', '/robots.txt'):
         response.headers['Cache-Control'] = 'public, max-age=3600'
     return response
 
@@ -151,17 +155,26 @@ def login_required(f):
     return decorated
 
 
+def _offer_context():
+    """Live offer (or None) plus the plans with sale prices applied."""
+    offer = offers.get_active_offer()
+    plans = offers.apply_to_plans(config.PLANS, offer) if offer else config.PLANS
+    return offer, plans
+
+
 # ── PUBLIC ROUTES ─────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
     track_visit()
     projects = database.get_all_projects()
+    offer, plans = _offer_context()
     return render_template('index.html',
                            projects=projects,
-                           plans=config.PLANS,
+                           plans=plans,
+                           offer=offer,
                            services=config.SERVICES,
                            faqs=config.FAQS,
-                           schema=seo.build_home_schema(),
+                           schema=seo.build_home_schema(plans, offer),
                            site_url=config.SITE_URL,
                            whatsapp=config.WHATSAPP_NUMBER,
                            phone=config.PHONE_NUMBER,
@@ -264,7 +277,8 @@ def sitemap():
 @app.route('/llms.txt')
 def llms_txt():
     """Plain-text briefing for AI assistants / answer engines (the page already links to it)."""
-    return app.response_class(seo.build_llms_txt(), mimetype='text/plain; charset=utf-8')
+    offer, plans = _offer_context()
+    return app.response_class(seo.build_llms_txt(plans, offer), mimetype='text/plain; charset=utf-8')
 
 
 # ── ADMIN: LOGIN / LOGOUT ─────────────────────────────────────────────────────
@@ -343,6 +357,73 @@ def admin_delete_project(pid):
     database.delete_project(pid)
     flash('Project deleted.', 'success')
     return redirect(url_for('admin_dashboard'))
+
+
+# ── ADMIN: OFFERS ─────────────────────────────────────────────────────────────
+@app.route('/admin/offer', methods=['GET', 'POST'])
+@login_required
+def admin_offer():
+    priced = [(i, p) for i, p in enumerate(config.PLANS) if p.get('price_value')]
+
+    if request.method == 'POST':
+        def to_int(v):
+            try:
+                return int(str(v).replace(',', '').strip())
+            except (ValueError, TypeError):
+                return 0
+
+        title   = request.form.get('title', '').strip()
+        message = request.form.get('message', '').strip()
+        pct     = to_int(request.form.get('discount_percent'))
+        ends_at = request.form.get('ends_at', '').strip()
+        active  = request.form.get('active') == 'on'
+        overrides = {}
+        for i, p in priced:
+            val = to_int(request.form.get(f'sale_{i}'))
+            if val:
+                overrides[str(i)] = val
+
+        error = None
+        if not title:
+            error = 'Give the offer a title.'
+        elif not 0 <= pct <= 90:
+            error = 'Discount % must be between 0 and 90.'
+        elif not pct and not overrides:
+            error = 'Set a discount % or a sale price for at least one plan.'
+        elif any(v >= config.PLANS[int(i)]['price_value'] for i, v in overrides.items()):
+            error = 'A sale price must be lower than the normal price.'
+        else:
+            end = offers.parse_end(ends_at)
+            if not end:
+                error = 'Pick an end date and time.'
+            elif active and end <= offers.now():
+                error = 'The end time must be in the future.'
+
+        data = {'active': active, 'title': title, 'message': message,
+                'discount_percent': pct, 'overrides': overrides, 'ends_at': ends_at}
+        if error:
+            flash(error, 'error')
+            return render_template('admin_offer.html', offer=data, priced=priced,
+                                   live=None, preview=None, now_eat=offers.now())
+        offers.save(data)
+        flash('Offer saved — it is live on the site now.' if active else 'Offer saved (switched off).', 'success')
+        return redirect(url_for('admin_offer'))
+
+    data = offers.load()
+    live = offers.get_active_offer()
+    preview = offers.apply_to_plans(config.PLANS, live) if live else None
+    return render_template('admin_offer.html', offer=data, priced=priced,
+                           live=live, preview=preview, now_eat=offers.now())
+
+
+@app.route('/admin/offer/stop', methods=['POST'])
+@login_required
+def admin_offer_stop():
+    data = offers.load()
+    data['active'] = False
+    offers.save(data)
+    flash('Offer ended — normal prices are showing.', 'success')
+    return redirect(url_for('admin_offer'))
 
 
 # ── ADMIN: ANALYTICS ──────────────────────────────────────────────────────────

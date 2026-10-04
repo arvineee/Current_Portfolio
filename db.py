@@ -44,6 +44,14 @@ def init_db():
             referrer   TEXT    NOT NULL DEFAULT ''
         )
     ''')
+
+    # Key/value settings (used for the limited-time offer from /admin/offer)
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS settings (
+            key   TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )
+    ''')
     conn.commit()
 
     # Seed projects from config once
@@ -115,6 +123,26 @@ def _proj(row):
     d['tags'] = json.loads(d.get('tags', '[]'))
     d['featured'] = bool(d.get('featured', 0))
     return d
+
+
+# ── SETTINGS (key/value) ──────────────────────────────────────────────────────
+
+def get_setting(key, default=None):
+    conn = get_db()
+    row = conn.execute('SELECT value FROM settings WHERE key=?', (key,)).fetchone()
+    conn.close()
+    return row['value'] if row else default
+
+
+def set_setting(key, value):
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO settings (key, value) VALUES (?, ?) '
+        'ON CONFLICT(key) DO UPDATE SET value=excluded.value',
+        (key, value)
+    )
+    conn.commit()
+    conn.close()
 
 
 # ── VISITOR TRACKING ──────────────────────────────────────────────────────────
@@ -213,4 +241,5 @@ def get_analytics(days=30):
         'daily': [dict(r) for r in daily],
         'recent': [dict(r) for r in recent],
     }
+
 

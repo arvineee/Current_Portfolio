@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Offers — Arvine Felix Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F7F4EE;color:#1A1A1A;min-height:100vh}
+    nav{background:#fff;border-bottom:1px solid #E5E0D5;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .nav-brand{font-weight:700;font-size:.95rem}
+    .nav-brand span{color:#E8591A}
+    .nav-links{display:flex;align-items:center;gap:1.25rem}
+    .nav-links a{font-size:.8rem;color:#6B6B6B;text-decoration:none}
+    .nav-links a:hover,.nav-links a.active{color:#E8591A;font-weight:600}
+    .wrap{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+    h1{font-size:1.4rem;font-weight:700;margin-bottom:.3rem}
+    .page-sub{font-size:.85rem;color:#8A8480;margin-bottom:1.5rem}
+    .flash{padding:.85rem 1rem;border-radius:7px;font-size:.82rem;margin-bottom:1.5rem}
+    .flash.success{background:#EAF6EE;border:1px solid #A3D9B1;color:#2D7A45}
+    .flash.error{background:#FEF0ED;border:1px solid #F5B8A6;color:#C23F1A}
+    .card{background:#fff;border:1px solid #E5E0D5;border-radius:10px;padding:1.75rem;margin-bottom:1.5rem}
+    .card h2{font-size:1rem;font-weight:700;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid #F0EDE6}
+    .live{background:#EAF6EE;border-color:#A3D9B1}
+    .live p{font-size:.85rem;color:#2D7A45;margin-bottom:.35rem}
+    .live s{color:#8A8480}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-full{grid-column:1/-1}
+    label{display:block;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A8480;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem}
+    input[type=text],input[type=number],input[type=datetime-local],textarea{width:100%;background:#FAF8F4;border:1px solid #D8D2C5;border-radius:6px;padding:.7rem .9rem;font-size:.875rem;font-family:'Inter',sans-serif;color:#1A1A1A;outline:none}
+    input:focus,textarea:focus{border-color:#E8591A;box-shadow:0 0 0 3px rgba(232,89,26,.08)}
+    textarea{resize:vertical;min-height:70px}
+    .hint{font-size:.72rem;color:#8A8480;margin-top:.35rem}
+    .check-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0}
+    .check-row input{width:auto;accent-color:#E8591A}
+    .check-row span{font-size:.875rem;color:#3D3D3D}
+    .chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+    .chip{background:#FAF8F4;border:1px solid #D8D2C5;border-radius:100px;padding:.3rem .8rem;font-size:.75rem;cursor:pointer;color:#3D3D3D}
+    .chip:hover{border-color:#E8591A;color:#E8591A}
+    .actions{display:flex;gap:.75rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EDE6;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;padding:.7rem 1.4rem;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none}
+    .btn-primary{background:#E8591A;color:#fff}
+    .btn-primary:hover{background:#CF4C10}
+    .btn-danger{background:#fff;border:1.5px solid #F5B8A6;color:#C23F1A}
+    .btn-danger:hover{background:#FEF0ED}
+    @media(max-width:580px){.form-grid{grid-template-columns:1fr}.form-full{grid-column:auto}}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand">Arvine Felix · <span>Admin</span></div>
+  <div class="nav-links">
+    <a href="/admin">Projects</a>
+    <a href="/admin/analytics">Analytics</a>
+    <a href="/admin/offer" class="active">Offers</a>
+    <a href="/" target="_blank">View Site</a>
+    <a href="/admin/logout">Logout</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>Limited-Time Offer</h1>
+  <p class="page-sub">Set a discount and an end time. The site shows crossed-out old prices and a countdown, then returns to normal prices by itself when time runs out.</p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+
+  {% if live %}
+  <div class="card live">
+    <h2>🟢 Live now: {{ live.title }}</h2>
+    <p>Ends {{ live.ends_at_label }}</p>
+    {% for p in preview %}{% if p.sale_price %}
+    <p>{{ p.name }}: <s>{{ p.price }}</s> → <strong>{{ p.sale_price }}</strong> ({{ p.percent_off }}% off)</p>
+    {% endif %}{% endfor %}
+    <form method="POST" action="/admin/offer/stop" style="margin-top:1rem" onsubmit="return confirm('End the offer now?')">
+      <button class="btn btn-danger" type="submit">End offer now</button>
+    </form>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <h2>{% if live %}Edit offer{% else %}Create an offer{% endif %}</h2>
+    <form method="POST">
+      <div class="form-grid">
+        <div class="form-full">
+          <label>Offer title *</label>
+          <input type="text" name="title" value="{{ offer.title }}" maxlength="60" placeholder="e.g. Independence Day Offer" required/>
+        </div>
+        <div class="form-full">
+          <label>Short message</label>
+          <textarea name="message" maxlength="140" placeholder="e.g. 20% off all websites booked this week">{{ offer.message }}</textarea>
+        </div>
+        <div class="form-full">
+          <label>Discount on all priced plans (%)</label>
+          <input type="number" name="discount_percent" min="0" max="90" value="{{ offer.discount_percent or '' }}" placeholder="e.g. 20"/>
+          <div class="hint">Leave blank if you prefer to set exact sale prices below.</div>
+        </div>
+        {% for i, p in priced %}
+        <div>
+          <label>{{ p.name }} — sale price (KES)</label>
+          <input type="number" name="sale_{{ i }}" min="1" value="{{ offer.overrides.get(i|string, '') }}" placeholder="normal: {{ p.price_value }}"/>
+        </div>
+        {% endfor %}
+        <div class="form-full">
+          <div class="hint" style="margin-top:-.25rem">A sale price you type here beats the % for that plan.</div>
+        </div>
+        <div class="form-full">
+          <label>Offer ends (Kenya time, EAT) *</label>
+          <input type="datetime-local" id="endsAt" name="ends_at" value="{{ offer.ends_at }}" required/>
+          <div class="chips">
+            <span class="chip" data-h="24">+24 hours</span>
+            <span class="chip" data-h="72">+3 days</span>
+            <span class="chip" data-h="168">+7 days</span>
+            <span class="chip" data-h="336">+14 days</span>
+            <span class="chip" data-h="720">+30 days</span>
+          </div>
+          <div class="hint">Now in Kenya: {{ now_eat.strftime('%d %b %Y, %I:%M %p') }}</div>
+        </div>
+        <div class="form-full">
+          <div class="check-row">
+            <input type="checkbox" name="active" id="active" {% if offer.active %}checked{% endif %}/>
+            <span>Switch the offer ON (visible on the site)</span>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Save offer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Quick-duration chips: add hours to "now" and write it in Kenya time.
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      var d = new Date(Date.now() + Number(c.dataset.h) * 3600 * 1000);
+      var s = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Africa/Nairobi', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hour12: false
+      }).format(d).replace(' ', 'T');
+      document.getElementById('endsAt').value = s;
+      document.getElementById('active').checked = true;
+    });
+  });
+</script>
+</body>
+</html>
+

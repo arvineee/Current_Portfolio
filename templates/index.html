@@ -98,6 +98,12 @@
   <header id="hero" style="padding:9rem 1.5rem 5rem;background:#F7F4EE;">
     <div style="max-width:860px;margin:0 auto;text-align:center;">
 
+      {% if offer %}
+      <a href="#pricing" class="offer-banner" style="display:block;max-width:640px;margin:0 auto 1.5rem;background:#1A1A1A;color:#fff;border-radius:10px;padding:.85rem 1.25rem;text-decoration:none;font-size:.9rem;line-height:1.5;">
+        🔥 <strong>{{ offer.title }}</strong>{% if offer.message %} — {{ offer.message }}{% endif %}
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#FFB37F;margin-top:.25rem;">Ends in <span class="offer-countdown" data-end="{{ offer.ends_at_iso }}">…</span></span>
+      </a>
+      {% endif %}
       <!-- Eyebrow -->
       <span class="eyebrow" style="display:block;margin-bottom:1.25rem;">
         Web Developer in Nairobi, Kenya · Booking new projects — 2 slots left this month
@@ -345,10 +351,20 @@
           {% endif %}
           <div>
             <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;color:#1A1A1A;margin-bottom:1.25rem;">{{ plan.name }}</h3>
-            <div style="display:flex;align-items:flex-end;gap:.35rem;margin-bottom:.5rem;">
+            <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:.35rem;margin-bottom:.5rem;">
+              {% if plan.sale_price %}
+              <s style="font-size:1rem;color:#8A8480;margin-bottom:.4rem;">{{ plan.price }}</s>
+              <span class="pricing-price accent">{{ plan.sale_price }}</span>
+              {% else %}
               <span class="pricing-price {% if plan.highlighted %}accent{% endif %}">{{ plan.price }}</span>
+              {% endif %}
               <span style="font-size:.8rem;color:#8A8480;margin-bottom:.35rem;">/ {{ plan.period }}</span>
             </div>
+            {% if plan.sale_price %}
+            <div style="display:inline-block;background:#FDE8DC;color:#B34700;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:.9rem;">
+              Save {{ plan.percent_off }}% · ends in <span class="offer-countdown" data-end="{{ offer.ends_at_iso }}">…</span>
+            </div>
+            {% endif %}
             <p style="font-size:.8rem;color:#585858;line-height:1.6;margin-bottom:1.5rem;">{{ plan.description }}</p>
             <ul style="list-style:none;border-top:1px solid #E5E0D5;padding-top:1.25rem;margin-bottom:2rem;display:flex;flex-direction:column;gap:.75rem;">
               {% for feature in plan.features %}
@@ -546,6 +562,32 @@
     }
   </style>
 
+  {% if offer %}
+  <script>
+    (function () {
+      var els = document.querySelectorAll('.offer-countdown');
+      if (!els.length) return;
+      var end = new Date(els[0].dataset.end).getTime();
+      function pad(n) { return n < 10 ? '0' + n : n; }
+      function tick() {
+        var left = end - Date.now();
+        if (left <= 0) {
+          els.forEach(function (e) { e.textContent = 'offer ended'; });
+          try {  // reload once so the server drops the offer and normal prices return
+            if (!sessionStorage.getItem('offerReload')) { sessionStorage.setItem('offerReload', '1'); location.reload(); }
+          } catch (e) {}
+          return;
+        }
+        var d = Math.floor(left / 864e5), h = Math.floor(left % 864e5 / 36e5),
+            m = Math.floor(left % 36e5 / 6e4), s = Math.floor(left % 6e4 / 1e3);
+        var t = (d ? d + 'd ' : '') + pad(h) + 'h ' + pad(m) + 'm ' + pad(s) + 's';
+        els.forEach(function (e) { e.textContent = t; });
+        setTimeout(tick, 1000);
+      }
+      tick();
+    })();
+  </script>
+  {% endif %}
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
